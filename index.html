@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FTO — Gestionale Noleggio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--bg2:#111111;--bg3:#181818;--bg4:#1e1e1e;--bg5:#242424;
+  --border:#1e1e1e;--border2:#282828;--border3:#333333;
+  --text:#ececec;--text2:#888888;--text3:#444444;--text4:#2a2a2a;
+  --green:#33aa55;--red:#cc3333;--amber:#cc8833;
+  --radius:6px;--radius-lg:10px;
+  --font:'Inter',system-ui,sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:12px}
+button{cursor:pointer;font-family:var(--font);font-size:11px}
+input,select,textarea{font-family:var(--font);font-size:11px}
+
+/* ── LOGIN ── */
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:1000}
+.login-box{width:340px;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:36px 32px}
+.login-logo{text-align:center;margin-bottom:24px}
+.login-logo img{max-height:70px;max-width:200px}
+.login-logo-text{font-size:26px;font-weight:800;letter-spacing:-1px;color:var(--text)}
+.login-sub{font-size:11px;color:var(--text3);text-align:center;margin-top:3px;margin-bottom:24px}
+.login-field{margin-bottom:10px}
+.login-field label{display:block;font-size:9px;font-weight:700;letter-spacing:1px;color:var(--text3);margin-bottom:4px;text-transform:uppercase}
+.login-field input{width:100%;padding:9px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-size:12px;outline:none;transition:border .15s}
+.login-field input:focus{border-color:var(--border3);background:#1c1c1c}
+.login-err{font-size:10px;color:var(--red);text-align:center;min-height:16px;margin-bottom:6px}
+.btn-login{width:100%;padding:11px;background:var(--text);color:#0a0a0a;border:none;border-radius:var(--radius);font-size:12px;font-weight:700;transition:opacity .15s;margin-top:4px}
+.btn-login:hover{opacity:.85}
+
+/* ── APP SHELL ── */
+#app{display:none;height:100vh;flex-direction:row}
+#app.visible{display:flex}
+
+/* ── SIDEBAR ── */
+#sidebar{width:190px;min-width:190px;height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:12px 8px}
+.sidebar-logo{text-align:center;padding:4px 8px 12px;border-bottom:1px solid var(--border)}
+.sidebar-logo img{max-height:52px;max-width:160px}
+.sidebar-logo-text{font-size:18px;font-weight:800;letter-spacing:-0.5px}
+.nav-items{display:flex;flex-direction:column;gap:2px;margin-top:10px;flex:1}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius);color:var(--text3);font-size:11px;font-weight:500;cursor:pointer;border:none;background:transparent;width:100%;text-align:left;transition:all .12s}
+.nav-item:hover{background:var(--bg3);color:var(--text2)}
+.nav-item.active{background:var(--bg4);color:var(--text);font-weight:600}
+.nav-icon{font-size:13px;width:16px;text-align:center;flex-shrink:0}
+.sidebar-bottom{border-top:1px solid var(--border);padding-top:10px;margin-top:auto}
+.user-info{padding:6px 8px;margin-bottom:4px}
+.user-name{font-size:11px;font-weight:600;color:var(--text2)}
+.user-role{font-size:9px;color:var(--text3);margin-top:1px}
+.btn-sb{width:100%;padding:5px 8px;border-radius:5px;font-size:10px;border:1px solid var(--border2);background:transparent;color:var(--text3);margin-bottom:3px;text-align:left;transition:all .12s}
+.btn-sb:hover{background:var(--bg3);color:var(--text2)}
+.ver{text-align:center;font-size:9px;color:#1e1e1e;margin-top:6px}
+
+/* ── MAIN ── */
+#main{flex:1;overflow-y:auto;background:var(--bg)}
+.page{display:none;padding:20px;max-width:1300px;margin:0 auto}
+.page.active{display:block}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.page-title{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.page-date{font-size:10px;color:var(--text4)}
+
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px}
+.card-sec{font-size:8px;font-weight:800;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding-bottom:7px;border-bottom:1px solid var(--border);margin-bottom:10px}
+
+/* ── FORM ── */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.form-group{display:flex;flex-direction:column;gap:3px}
+.form-group.span2{grid-column:span 2}
+label{font-size:9px;color:var(--text2);font-weight:500;letter-spacing:.2px}
+input[type=text],input[type=number],input[type=date],input[type=time],select,textarea{
+  padding:4px 8px;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:4px;color:var(--text);font-size:10px;outline:none;transition:border .15s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--border3);background:#1c1c1c}
+textarea{resize:vertical;min-height:52px}
+select{appearance:none;padding-right:20px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23444' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 6px center}
+input[type=date]{color-scheme:dark}
+
+/* ── THREE COLUMNS ── */
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:900px){.three-col{grid-template-columns:1fr}}
+
+/* ── BUTTONS ── */
+.btn{padding:6px 14px;border-radius:var(--radius);font-size:11px;font-weight:600;border:none;transition:all .12s;cursor:pointer}
+.btn-primary{background:var(--text);color:#0a0a0a}
+.btn-primary:hover{opacity:.88}
+.btn-secondary{background:var(--bg3);color:var(--text2);border:1px solid var(--border2)}
+.btn-secondary:hover{background:var(--bg4);color:var(--text)}
+.btn-danger{background:transparent;color:var(--red);border:1px solid #2a1010}
+.btn-danger:hover{background:#160808}
+.btn-full{width:100%;padding:11px;font-size:12px;margin-top:14px}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+
+/* ── STORICO ── */
+.filter-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;margin-bottom:14px;padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg)}
+.filter-group{display:flex;flex-direction:column;gap:3px}
+.filter-group label{font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.filter-bar input,.filter-bar select{padding:4px 8px;font-size:10px}
+.nol-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:6px;overflow:hidden}
+.nol-card:hover{border-color:var(--border2)}
+.nol-hdr{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;user-select:none}
+.nol-hdr:hover{background:rgba(255,255,255,.015)}
+.nol-arrow{width:14px;height:14px;color:var(--text3);transition:transform .2s;flex-shrink:0;font-size:10px}
+.nol-arrow.open{transform:rotate(90deg)}
+.nol-nome{font-size:12px;font-weight:700;flex:0 0 auto;min-width:120px}
+.nol-auto{font-size:10px;color:var(--text2);flex:1}
+.nol-dur{font-size:9px;color:var(--text3);white-space:nowrap}
+.nol-price{font-size:12px;font-weight:700;flex:0 0 auto}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:600;flex-shrink:0}
+.badge-green{background:#0a1a0e;color:#33aa55;border:1px solid #0d2a12}
+.badge-red{background:#1a0a0a;color:#cc4444;border:1px solid #2a1010}
+.badge-grey{background:var(--bg3);color:var(--text3);border:1px solid var(--border2)}
+.nol-note{font-size:9px;color:#555;font-style:italic;padding:0 14px 6px 38px}
+.nol-detail{display:none;padding:10px 14px 14px 38px;border-top:1px solid var(--border)}
+.nol-detail.open{display:block}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;margin:8px 0}
+.detail-row{display:flex;gap:6px;font-size:9px}
+.dk{color:var(--text3);flex:0 0 110px}
+.dv{color:var(--text2)}
+.path-link{display:inline-flex;align-items:center;gap:5px;font-size:9px;color:var(--green);
+  padding:2px 7px;border-radius:4px;background:#0a1a0e;border:1px solid #0d2015;
+  margin-top:4px;margin-right:4px;cursor:pointer;text-decoration:none}
+.path-link:hover{background:#0d2015}
+.detail-actions{display:flex;gap:6px;margin-top:10px;justify-content:flex-end}
+
+/* ── TOGGLE PILLS ── */
+.pill-group{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.pill{padding:4px 12px;border-radius:20px;font-size:10px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all .12s}
+.pill.active{background:var(--bg4);border-color:var(--border3);color:var(--text)}
+.fuel-bar{display:flex;gap:3px;margin-top:4px}
+.fuel-btn{flex:1;padding:4px;border-radius:4px;font-size:10px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all .12s}
+.fuel-btn.active{background:#0a1a0e;color:var(--green);border-color:#0d3018}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:500}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);width:680px;max-width:96vw;max-height:90vh;display:flex;flex-direction:column}
+.modal-head{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-size:14px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--text3);font-size:16px;padding:2px 6px;border-radius:3px;line-height:1}
+.modal-close:hover{color:var(--text);background:var(--bg3)}
+.modal-body{padding:16px 18px;overflow-y:auto;flex:1}
+.modal-foot{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0}
+
+/* ── TOAST ── */
+#toast{position:fixed;top:14px;right:14px;z-index:9999;background:#111;border:1px solid var(--border2);border-radius:10px;padding:11px 16px;min-width:240px;display:none;flex-direction:column;gap:2px}
+#toast.show{display:flex}
+#toast-title{font-size:11px;font-weight:700;color:var(--green)}
+#toast-sub{font-size:9px;color:#1a8c42}
+
+/* ── TABLE ── */
+.data-table{width:100%;border-collapse:collapse;font-size:10px}
+.data-table th{text-align:left;padding:7px 8px;font-size:8px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)}
+.data-table td{padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text2)}
+.data-table tr:hover td{background:rgba(255,255,255,.015)}
+.ok{color:var(--green)}.fail{color:var(--red)}
+
+/* ── SECTION DIVIDER ── */
+.sec-divider{font-size:8px;font-weight:800;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin:14px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border);grid-column:1/-1}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo" id="login-logo-wrap">
+      <div class="login-logo-text">FTO</div>
+    </div>
+    <div class="login-sub">Gestionale Noleggio · Accedi</div>
+    <div class="login-field"><label>Username</label><input id="inp-user" type="text" placeholder="es. ak" autocomplete="username"></div>
+    <div class="login-field"><label>Password</label><input id="inp-pass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+    <div class="login-err" id="login-err"></div>
+    <button class="btn-login" id="btn-login">Accedi</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"><div id="toast-title"></div><div id="toast-sub"></div></div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-logo" id="sb-logo-wrap">
+      <div class="sidebar-logo-text">FTO</div>
+    </div>
+    <div class="nav-items">
+      <button class="nav-item active" data-page="storico"><span class="nav-icon">📋</span>Storico</button>
+      <button class="nav-item" data-page="nuovo"><span class="nav-icon">📄</span>Nuovo Noleggio</button>
+      <button class="nav-item" data-page="verbale"><span class="nav-icon">📝</span>Verbale Auto</button>
+      <button class="nav-item" data-page="auto"><span class="nav-icon">🚗</span>Veicoli</button>
+      <button class="nav-item" id="nav-logs" data-page="logs" style="display:none"><span class="nav-icon">🔐</span>Log Accessi</button>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-info">
+        <div class="user-name" id="sb-user">—</div>
+        <div class="user-role" id="sb-role">—</div>
+      </div>
+      <button class="btn-sb" id="btn-logout">← Esci</button>
+      <div class="ver">v3.2 · ftorent.it</div>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <!-- STORICO -->
+    <div class="page active" id="page-storico">
+      <div class="page-header">
+        <div class="page-title">📋 Storico Noleggi</div>
+        <div class="page-date" id="storico-date"></div>
+      </div>
+      <div class="filter-bar">
+        <div class="filter-group"><label>Cerca</label><input id="filt-q" type="text" placeholder="🔍 cliente, auto, targa…" style="min-width:180px"></div>
+        <div class="filter-group"><label>Nome</label><input id="filt-nome" type="text" placeholder="👤 Nome"></div>
+        <div class="filter-group"><label>Auto / Targa</label><input id="filt-auto" type="text" placeholder="🚗 Auto"></div>
+        <div class="filter-group"><label>📅 Da</label><input id="filt-da" type="date"></div>
+        <div class="filter-group"><label>📅 A</label><input id="filt-a" type="date"></div>
+        <div class="filter-group"><label>€ min</label><input id="filt-pmin" type="number" style="width:70px"></div>
+        <div class="filter-group"><label>€ max</label><input id="filt-pmax" type="number" style="width:70px"></div>
+        <div class="filter-group"><label>Verbale</label>
+          <select id="filt-stato">
+            <option value="">Tutti</option>
+            <option value="attesa">⏳ In attesa</option>
+            <option value="ok">🟢 OK</option>
+            <option value="danno">🔴 Danno</option>
+          </select>
+        </div>
+        <button class="btn btn-secondary" id="btn-reset-filt">↺ Reset</button>
+      </div>
+      <div id="noleggi-list"><div style="color:var(--text3);padding:16px 0">Caricamento…</div></div>
+    </div>
+
+    <!-- NUOVO NOLEGGIO -->
+    <div class="page" id="page-nuovo">
+      <div class="page-header"><div class="page-title">📄 Nuovo Noleggio</div></div>
+      <form id="form-noleggio" autocomplete="off">
+        <!-- AUTO -->
+        <div class="card" style="margin-bottom:10px">
+          <div class="card-sec">🚗 Auto & Noleggio</div>
+          <div class="form-grid">
+            <div class="form-group span2">
+              <label>Marca / Modello</label>
+              <select id="n-auto-sel" name="marca_modello"></select>
+            </div>
+            <div class="form-group"><label>Targa</label><input type="text" name="targa" id="n-targa" readonly style="color:var(--text3)"></div>
+            <div class="form-group"><label>Telaio</label><input type="text" name="telaio" id="n-telaio" readonly style="color:var(--text3)"></div>
+            <div class="form-group"><label>Cilindrata</label><input type="text" name="cilindrata" id="n-cil" readonly style="color:var(--text3)"></div>
+            <div class="form-group"><label>Alimentazione</label><input type="text" name="alimentazione" id="n-alim" readonly style="color:var(--text3)"></div>
+            <div class="form-group"><label>Anno</label><input type="text" name="anno" id="n-anno" readonly style="color:var(--text3)"></div>
+            <div class="form-group"><label>Colore</label><input type="text" name="colore" id="n-colore" readonly style="color:var(--text3)"></div>
+            <div class="form-group"><label>Km attuali</label><input type="text" name="km_iniziali" id="n-km"></div>
+            <div class="sec-divider">📅 Date & Orari</div>
+            <div class="form-group"><label>Data inizio</label><input type="date" name="data_inizio"></div>
+            <div class="form-group"><label>Ora inizio</label><input type="time" name="ora_inizio"></div>
+            <div class="form-group"><label>Data fine</label><input type="date" name="data_fine"></div>
+            <div class="form-group"><label>Ora fine</label><input type="time" name="ora_fine"></div>
+            <div class="sec-divider">💶 Tariffe</div>
+            <div class="form-group"><label>Prezzo noleggio (€)</label><input type="text" name="prezzo_noleggio"></div>
+            <div class="form-group"><label>Km inclusi</label><input type="text" name="km_compresi"></div>
+            <div class="form-group"><label>€/km extra</label><input type="text" name="km_extra"></div>
+            <div class="form-group"><label>Ric. premium (€)</label><input type="text" name="riconsegna_premium"></div>
+            <div class="form-group"><label>Penale (€)</label><input type="text" name="penale"></div>
+            <div class="form-group"><label>Deposito (€)</label><input type="text" name="deposito"></div>
+            <div class="form-group"><label>Costo violaz. (€)</label><input type="text" name="costo_violazione"></div>
+            <div class="form-group"><label>Diff. carb. (€)</label><input type="text" name="diff_carburante"></div>
+          </div>
+        </div>
+
+        <div class="three-col">
+          <!-- CLIENTE -->
+          <div class="card">
+            <div class="card-sec">👤 Cliente</div>
+            <div class="form-grid" style="grid-template-columns:1fr 1fr">
+              <div class="form-group"><label>Nome</label><input type="text" name="cl_nome" placeholder="Nome"></div>
+              <div class="form-group"><label>Cognome</label><input type="text" name="cl_cognome" placeholder="Cognome"></div>
+              <div class="form-group"><label>Luogo nascita</label><input type="text" name="cl_luogo"></div>
+              <div class="form-group"><label>Data nascita</label><input type="text" name="cl_data_nascita" placeholder="GG/MM/AAAA"></div>
+              <div class="form-group span2"><label>Indirizzo</label><input type="text" name="cl_indirizzo"></div>
+              <div class="form-group span2"><label>Cod. fiscale</label><input type="text" name="cl_cf" maxlength="16" style="text-transform:uppercase"></div>
+              <div class="form-group span2"><label>N° documento</label><input type="text" name="cl_doc"></div>
+              <div class="form-group"><label>Rilasciato da</label><input type="text" name="cl_doc_da"></div>
+              <div class="form-group"><label>Data doc.</label><input type="text" name="cl_doc_dt" placeholder="GG/MM/AAAA"></div>
+              <div class="form-group span2"><label>N° patente</label><input type="text" name="cl_pat"></div>
+              <div class="form-group"><label>Categoria</label><input type="text" name="cl_cat" placeholder="B, BE…"></div>
+              <div class="form-group"><label>Pat. rilascio</label><input type="text" name="cl_pat_r" placeholder="GG/MM/AAAA"></div>
+              <div class="form-group span2"><label>Pat. scadenza</label><input type="text" name="cl_pat_s" placeholder="GG/MM/AAAA"></div>
+              <div class="sec-divider" style="font-size:8px">🏢 Società</div>
+              <div class="form-group span2"><label>Nome società</label><input type="text" name="soc_nome"></div>
+              <div class="form-group span2"><label>Sede</label><input type="text" name="soc_sede"></div>
+              <div class="form-group"><label>C.F. società</label><input type="text" name="soc_cf"></div>
+              <div class="form-group"><label>P.IVA</label><input type="text" name="soc_piva"></div>
+            </div>
+          </div>
+
+          <!-- GUIDATORE -->
+          <div class="card">
+            <div class="card-sec">🧑‍✈️ Guidatore</div>
+            <div class="form-grid" style="grid-template-columns:1fr 1fr">
+              <div class="form-group"><label>Nome</label><input type="text" name="gu_nome" placeholder="Nome"></div>
+              <div class="form-group"><label>Cognome</label><input type="text" name="gu_cognome" placeholder="Cognome"></div>
+              <div class="form-group"><label>Luogo nascita</label><input type="text" name="gu_luogo"></div>
+              <div class="form-group"><label>Data nascita</label><input type="text" name="gu_data_nascita" placeholder="GG/MM/AAAA"></div>
+              <div class="form-group span2"><label>Indirizzo</label><input type="text" name="gu_indirizzo"></div>
+              <div class="form-group span2"><label>Cod. fiscale</label><input type="text" name="gu_cf" maxlength="16" style="text-transform:uppercase"></div>
+              <div class="form-group span2"><label>N° documento</label><input type="text" name="gu_doc"></div>
+              <div class="form-group"><label>Rilasciato da</label><input type="text" name="gu_doc_da"></div>
+              <div class="form-group"><label>Data doc.</label><input type="text" name="gu_doc_dt" placeholder="GG/MM/AAAA"></div>
+              <div class="form-group span2"><label>N° patente</label><input type="text" name="gu_pat"></div>
+              <div class="form-group"><label>Categoria</label><input type="text" name="gu_cat" placeholder="B, BE…"></div>
+              <div class="form-group"><label>Pat. rilascio</label><input type="text" name="gu_pat_r" placeholder="GG/MM/AAAA"></div>
+              <div class="form-group span2"><label>Pat. scadenza</label><input type="text" name="gu_pat_s" placeholder="GG/MM/AAAA"></div>
+              <div class="form-group span2" style="margin-top:6px">
+                <label><input type="checkbox" id="chk-copia-dati" style="margin-right:5px">Copia dati → Guidatore</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONDUCENTE AGGIUNTIVO -->
+          <div class="card">
+            <div class="card-sec" style="display:flex;align-items:center;justify-content:space-between">
+              <span>➕ Conducente Aggiuntivo</span>
+              <button type="button" id="btn-extra-toggle" style="font-size:9px;padding:2px 8px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text3)">Mostra</button>
+            </div>
+            <div id="extra-body" style="display:none">
+              <div class="form-grid" style="grid-template-columns:1fr 1fr">
+                <div class="form-group"><label>Nome</label><input type="text" name="ex_nome"></div>
+                <div class="form-group"><label>Cognome</label><input type="text" name="ex_cognome"></div>
+                <div class="form-group"><label>Luogo nascita</label><input type="text" name="ex_luogo"></div>
+                <div class="form-group"><label>Data nascita</label><input type="text" name="ex_data_nascita" placeholder="GG/MM/AAAA"></div>
+                <div class="form-group span2"><label>Indirizzo</label><input type="text" name="ex_indirizzo"></div>
+                <div class="form-group span2"><label>Cod. fiscale</label><input type="text" name="ex_cf" maxlength="16" style="text-transform:uppercase"></div>
+                <div class="form-group span2"><label>N° documento</label><input type="text" name="ex_doc"></div>
+                <div class="form-group"><label>Rilasciato da</label><input type="text" name="ex_doc_da"></div>
+                <div class="form-group"><label>Data doc.</label><input type="text" name="ex_doc_dt" placeholder="GG/MM/AAAA"></div>
+                <div class="form-group span2"><label>N° patente</label><input type="text" name="ex_pat"></div>
+                <div class="form-group"><label>Categoria</label><input type="text" name="ex_cat" placeholder="B, BE…"></div>
+                <div class="form-group"><label>Pat. rilascio</label><input type="text" name="ex_pat_r" placeholder="GG/MM/AAAA"></div>
+                <div class="form-group span2"><label>Pat. scadenza</label><input type="text" name="ex_pat_s" placeholder="GG/MM/AAAA"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:10px">
+          <div class="card-sec">📝 Note</div>
+          <textarea name="note" rows="2" style="width:100%" placeholder="Note aggiuntive sul noleggio…"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">✦ Salva Noleggio</button>
+      </form>
+    </div>
+
+    <!-- VERBALE -->
+    <div class="page" id="page-verbale">
+      <div class="page-header"><div class="page-title">📝 Verbale Auto</div></div>
+      <form id="form-verbale" autocomplete="off">
+        <div class="card" style="margin-bottom:10px">
+          <div class="card-sec">🔑 Seleziona Noleggio</div>
+          <div class="form-grid">
+            <div class="form-group span2"><label>Noleggio</label><select id="v-noleggio" name="noleggio_id"></select></div>
+            <div class="form-group"><label>Targa</label><input type="text" id="v-targa" name="targa" readonly style="color:var(--text3)"></div>
+            <div class="form-group"><label>Km iniziali</label><input type="text" id="v-km-ini" name="km_iniziali" readonly style="color:var(--text3)"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:10px">
+          <div class="card-sec">📋 Informazioni Base</div>
+          <div class="form-grid">
+            <div class="form-group"><label>Data riconsegna</label><input type="date" name="data"></div>
+            <div class="form-group"><label>Ora riconsegna</label><input type="time" name="ora"></div>
+            <div class="form-group"><label>Km attuali</label><input type="text" name="km_attuali" id="v-km-att" oninput="calcKmDiff()"></div>
+            <div class="form-group"><label>Δ Km</label><div id="v-km-diff" style="padding:4px 8px;font-size:11px;font-weight:600;color:var(--text3)">—</div></div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+          <div class="card">
+            <div class="card-sec">⛽ Carburante</div>
+            <div class="fuel-bar" id="fuel-bar">
+              <button type="button" class="fuel-btn" data-val="E">E</button>
+              <button type="button" class="fuel-btn" data-val="1/4">¼</button>
+              <button type="button" class="fuel-btn active" data-val="1/2">½</button>
+              <button type="button" class="fuel-btn" data-val="3/4">¾</button>
+              <button type="button" class="fuel-btn" data-val="F">F</button>
+            </div>
+            <input type="hidden" name="carburante" id="v-carb" value="1/2">
+          </div>
+          <div class="card">
+            <div class="card-sec">🔑 Tipo Riconsegna</div>
+            <div class="pill-group">
+              <button type="button" class="pill active" data-group="riconsegna" data-val="Standard">▪ Standard</button>
+              <button type="button" class="pill" data-group="riconsegna" data-val="Premium">⭐ Premium</button>
+            </div>
+            <input type="hidden" name="tipo_riconsegna" id="v-tipo-ric" value="Standard">
+          </div>
+          <div class="card">
+            <div class="card-sec">🧹 Pulizia</div>
+            <div class="pill-group">
+              <button type="button" class="pill active" data-group="pulizia" data-val="Pulita">✓ Pulita</button>
+              <button type="button" class="pill" data-group="pulizia" data-val="Sporca">✗ Sporca</button>
+            </div>
+            <input type="hidden" name="pulizia" id="v-pulizia" value="Pulita">
+            <label style="margin-top:7px;display:flex;align-items:center;gap:5px;font-size:10px;cursor:pointer;color:var(--text2)">
+              <input type="checkbox" name="pulizia_premium" id="v-pul-prem"> Pulizia premium
+            </label>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div class="card">
+            <div class="card-sec">🎒 Oggetti Personali</div>
+            <div class="pill-group">
+              <button type="button" class="pill active" data-group="oggetti" data-val="No">✓ Nessuno</button>
+              <button type="button" class="pill" data-group="oggetti" data-val="Sì">! Trovati</button>
+            </div>
+            <input type="hidden" name="oggetti" id="v-oggetti" value="No">
+            <input type="text" name="oggetti_desc" placeholder="Descrizione oggetti…" style="margin-top:7px;width:100%">
+          </div>
+          <div class="card">
+            <div class="card-sec">🔍 Ispezione Danni</div>
+            <div class="pill-group">
+              <button type="button" class="pill active" data-group="danno" data-val="No">🟢 Nessun danno</button>
+              <button type="button" class="pill" data-group="danno" data-val="Sì">🔴 Danno presente</button>
+            </div>
+            <input type="hidden" name="danno" id="v-danno" value="No">
+            <div id="danno-details" style="display:none;margin-top:10px">
+              <div class="form-grid" style="grid-template-columns:1fr 1fr">
+                <div class="form-group span2">
+                  <label>Tipo danno</label>
+                  <div class="pill-group">
+                    <button type="button" class="pill active" data-group="tipo-danno" data-val="Interno">Interno</button>
+                    <button type="button" class="pill" data-group="tipo-danno" data-val="Esterno">Esterno</button>
+                    <button type="button" class="pill" data-group="tipo-danno" data-val="Entrambi">Entrambi</button>
+                  </div>
+                  <input type="hidden" name="tipo_danno" id="v-tipo-danno" value="Interno">
+                </div>
+                <div class="form-group"><label>Posizione danno</label><input type="text" name="posizione_danno"></div>
+                <div class="form-group"><label>Costo stimato (€)</label><input type="text" name="costo_danno"></div>
+                <div class="form-group span2"><label>Descrizione</label><textarea name="descrizione" rows="2"></textarea></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:10px">
+          <div class="card-sec">👤 Operatore</div>
+          <div class="form-grid">
+            <div class="form-group"><label>Nome</label><input type="text" name="operatore_nome" placeholder="Nome"></div>
+            <div class="form-group"><label>Cognome</label><input type="text" name="operatore_cognome" placeholder="Cognome"></div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">✦ Salva Verbale</button>
+      </form>
+    </div>
+
+    <!-- VEICOLI -->
+    <div class="page" id="page-auto">
+      <div class="page-header">
+        <div class="page-title">🚗 Veicoli</div>
+        <button class="btn btn-secondary" id="btn-add-auto">+ Aggiungi</button>
+      </div>
+      <div id="auto-list"></div>
+    </div>
+
+    <!-- LOGS -->
+    <div class="page" id="page-logs">
+      <div class="page-header">
+        <div class="page-title">🔐 Log Accessi</div>
+        <button class="btn btn-secondary" id="btn-reload-logs">↺ Aggiorna</button>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr><th>Data / Ora</th><th>Utente</th><th>Ruolo</th><th>Esito</th><th>IP</th><th>Sistema</th></tr></thead>
+          <tbody id="logs-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal" style="width:760px">
+    <div class="modal-head">
+      <div class="modal-title">✏️ Modifica Noleggio</div>
+      <button class="modal-close" onclick="closeModal('modal-edit')">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="form-edit">
+        <input type="hidden" name="id">
+        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:10px" id="edit-title"></div>
+
+        <div class="card-sec">🚗 Auto</div>
+        <div class="form-grid" style="margin-bottom:12px">
+          <div class="form-group"><label>Marca / Modello</label><input type="text" name="marca_modello"></div>
+          <div class="form-group"><label>Targa</label><input type="text" name="targa"></div>
+          <div class="form-group"><label>Telaio</label><input type="text" name="telaio"></div>
+          <div class="form-group"><label>Cilindrata</label><input type="text" name="cilindrata"></div>
+          <div class="form-group"><label>Alimentazione</label><input type="text" name="alimentazione"></div>
+          <div class="form-group"><label>Anno</label><input type="text" name="anno"></div>
+          <div class="form-group"><label>Colore</label><input type="text" name="colore"></div>
+          <div class="form-group"><label>Km iniziali</label><input type="text" name="km_iniziali"></div>
+        </div>
+
+        <div class="card-sec">📅 Date & Orari</div>
+        <div class="form-grid" style="margin-bottom:12px">
+          <div class="form-group"><label>Data contratto</label><input type="text" name="data_contratto"></div>
+          <div class="form-group"><label>Data inizio</label><input type="text" name="data_inizio"></div>
+          <div class="form-group"><label>Ora inizio</label><input type="text" name="ora_inizio"></div>
+          <div class="form-group"><label>Data fine</label><input type="text" name="data_fine"></div>
+          <div class="form-group"><label>Ora fine</label><input type="text" name="ora_fine"></div>
+          <div class="form-group"><label>Giorni</label><input type="text" name="giorni"></div>
+        </div>
+
+        <div class="card-sec">💶 Tariffe</div>
+        <div class="form-grid" style="margin-bottom:12px">
+          <div class="form-group"><label>Prezzo noleggio (€)</label><input type="text" name="prezzo_noleggio"></div>
+          <div class="form-group"><label>Km compresi</label><input type="text" name="km_compresi"></div>
+          <div class="form-group"><label>€/km extra</label><input type="text" name="km_extra"></div>
+          <div class="form-group"><label>Ric. premium (€)</label><input type="text" name="riconsegna_premium"></div>
+          <div class="form-group"><label>Penale (€)</label><input type="text" name="penale"></div>
+          <div class="form-group"><label>Deposito (€)</label><input type="text" name="deposito"></div>
+          <div class="form-group"><label>Costo violaz. (€)</label><input type="text" name="costo_violazione"></div>
+          <div class="form-group"><label>Diff. carb. (€)</label><input type="text" name="diff_carburante"></div>
+        </div>
+
+        <div class="card-sec">👤 Cliente</div>
+        <div class="form-grid" style="margin-bottom:12px">
+          <div class="form-group"><label>Nome</label><input type="text" name="cl_nome"></div>
+          <div class="form-group"><label>Cognome</label><input type="text" name="cl_cognome"></div>
+          <div class="form-group"><label>Luogo nascita</label><input type="text" name="cl_luogo"></div>
+          <div class="form-group"><label>Data nascita</label><input type="text" name="cl_data_nascita"></div>
+          <div class="form-group span2"><label>Indirizzo</label><input type="text" name="cl_indirizzo"></div>
+          <div class="form-group"><label>Cod. fiscale</label><input type="text" name="cl_cf"></div>
+          <div class="form-group"><label>N° documento</label><input type="text" name="cl_doc"></div>
+          <div class="form-group"><label>Rilasciato da</label><input type="text" name="cl_doc_da"></div>
+          <div class="form-group"><label>Data doc.</label><input type="text" name="cl_doc_dt"></div>
+          <div class="form-group"><label>N° patente</label><input type="text" name="cl_pat"></div>
+          <div class="form-group"><label>Categoria</label><input type="text" name="cl_cat"></div>
+          <div class="form-group"><label>Pat. rilascio</label><input type="text" name="cl_pat_r"></div>
+          <div class="form-group"><label>Pat. scadenza</label><input type="text" name="cl_pat_s"></div>
+        </div>
+
+        <div class="card-sec">🏢 Società</div>
+        <div class="form-grid" style="margin-bottom:12px">
+          <div class="form-group"><label>Nome società</label><input type="text" name="soc_nome"></div>
+          <div class="form-group"><label>Sede</label><input type="text" name="soc_sede"></div>
+          <div class="form-group"><label>C.F. società</label><input type="text" name="soc_cf"></div>
+          <div class="form-group"><label>P.IVA</label><input type="text" name="soc_piva"></div>
+        </div>
+
+        <div class="card-sec">🧑‍✈️ Guidatore</div>
+        <div class="form-grid" style="margin-bottom:12px">
+          <div class="form-group"><label>Nome</label><input type="text" name="gu_nome"></div>
+          <div class="form-group"><label>Cognome</label><input type="text" name="gu_cognome"></div>
+          <div class="form-group"><label>Luogo nascita</label><input type="text" name="gu_luogo"></div>
+          <div class="form-group"><label>Data nascita</label><input type="text" name="gu_data_nascita"></div>
+          <div class="form-group span2"><label>Indirizzo</label><input type="text" name="gu_indirizzo"></div>
+          <div class="form-group"><label>Cod. fiscale</label><input type="text" name="gu_cf"></div>
+          <div class="form-group"><label>N° documento</label><input type="text" name="gu_doc"></div>
+          <div class="form-group"><label>Rilasciato da</label><input type="text" name="gu_doc_da"></div>
+          <div class="form-group"><label>Data doc.</label><input type="text" name="gu_doc_dt"></div>
+          <div class="form-group"><label>N° patente</label><input type="text" name="gu_pat"></div>
+          <div class="form-group"><label>Categoria</label><input type="text" name="gu_cat"></div>
+          <div class="form-group"><label>Pat. rilascio</label><input type="text" name="gu_pat_r"></div>
+          <div class="form-group"><label>Pat. scadenza</label><input type="text" name="gu_pat_s"></div>
+        </div>
+
+        <div class="card-sec">📝 Note</div>
+        <textarea name="note" rows="2" style="width:100%"></textarea>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal('modal-edit')">Annulla</button>
+      <button class="btn btn-primary" id="btn-save-edit">💾 Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD AUTO MODAL -->
+<div class="modal-overlay" id="modal-auto">
+  <div class="modal" style="width:500px">
+    <div class="modal-head">
+      <div class="modal-title">🚗 Aggiungi Veicolo</div>
+      <button class="modal-close" onclick="closeModal('modal-auto')">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="form-auto">
+        <div class="form-grid">
+          <div class="form-group"><label>Marca / Modello *</label><input type="text" name="marca_modello" required></div>
+          <div class="form-group"><label>Targa *</label><input type="text" name="targa" required></div>
+          <div class="form-group"><label>Telaio</label><input type="text" name="telaio"></div>
+          <div class="form-group"><label>Cilindrata</label><input type="text" name="cilindrata"></div>
+          <div class="form-group"><label>Alimentazione</label><input type="text" name="alimentazione"></div>
+          <div class="form-group"><label>Anno</label><input type="text" name="anno"></div>
+          <div class="form-group"><label>Colore</label><input type="text" name="colore"></div>
+          <div class="form-group"><label>Km attuali</label><input type="number" name="km" value="0"></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal('modal-auto')">Annulla</button>
+      <button class="btn btn-primary" id="btn-save-auto">💾 Salva</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let TOKEN = localStorage.getItem('fto_token') || '';
+let USER  = JSON.parse(localStorage.getItem('fto_user') || '{}');
+
+// ── API ──────────────────────────────────────────────────────
+async function api(path, opts={}) {
+  const res = await fetch(API + path, {
+    headers: {'Content-Type':'application/json','Authorization':`Bearer ${TOKEN}`,...(opts.headers||{})},
+    ...opts
+  });
+  if (res.status === 401) { doLogout(); return null; }
+  if (!res.ok) {
+    const e = await res.json().catch(()=>({detail:'Errore server'}));
+    throw new Error(e.detail || 'Errore');
+  }
+  return res.json();
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+function toast(title, sub='', isErr=false) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-sub').textContent = sub;
+  document.getElementById('toast-title').style.color = isErr ? '#cc4444' : '#33aa55';
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── AUTH ─────────────────────────────────────────────────────
+document.getElementById('inp-pass').addEventListener('keydown', e => e.key==='Enter' && doLogin());
+document.getElementById('btn-login').addEventListener('click', doLogin);
+
+async function doLogin() {
+  const username = document.getElementById('inp-user').value.trim();
+  const password = document.getElementById('inp-pass').value;
+  const errEl = document.getElementById('login-err');
+  errEl.textContent = '';
+  try {
+    const data = await api('/api/auth/login', {
+      method:'POST', body:JSON.stringify({username, password, hostname:location.hostname})
+    });
+    if (!data) return;
+    TOKEN = data.access_token;
+    USER  = {display:data.display, role:data.role, username};
+    localStorage.setItem('fto_token', TOKEN);
+    localStorage.setItem('fto_user', JSON.stringify(USER));
+    showApp();
+  } catch(e) {
+    errEl.textContent = '❌  ' + e.message;
+    document.getElementById('inp-pass').value = '';
+  }
+}
+
+function doLogout() {
+  TOKEN=''; USER={};
+  localStorage.removeItem('fto_token'); localStorage.removeItem('fto_user');
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('login-screen').style.display='flex';
+}
+document.getElementById('btn-logout').addEventListener('click', doLogout);
+
+// ── APP INIT ─────────────────────────────────────────────────
+async function showApp() {
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').classList.add('visible');
+  document.getElementById('sb-user').textContent = (USER.role==='admin'?'👑 ':'👤 ') + (USER.display||USER.username);
+  document.getElementById('sb-role').textContent = USER.role==='admin'?'Amministratore':'Dipendente';
+  if (USER.role==='admin') document.getElementById('nav-logs').style.display='flex';
+  document.getElementById('storico-date').textContent =
+    new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  loadStorico(); loadAutoData(); loadVerbaleSelector();
+}
+
+if (TOKEN) showApp().catch(doLogout);
+
+// ── NAV ──────────────────────────────────────────────────────
+document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('page-'+btn.dataset.page).classList.add('active');
+    if (btn.dataset.page==='storico')  loadStorico();
+    if (btn.dataset.page==='logs')     loadLogs();
+    if (btn.dataset.page==='auto')     loadAutoPage();
+    if (btn.dataset.page==='verbale')  loadVerbaleSelector();
+  });
+});
+
+// ── STORICO ──────────────────────────────────────────────────
+let _ft = null;
+function onFiltChange() { clearTimeout(_ft); _ft = setTimeout(loadStorico, 280); }
+['filt-q','filt-nome','filt-auto','filt-pmin','filt-pmax'].forEach(id =>
+  document.getElementById(id).addEventListener('input', onFiltChange));
+['filt-da','filt-a','filt-stato'].forEach(id =>
+  document.getElementById(id).addEventListener('change', onFiltChange));
+document.getElementById('btn-reset-filt').addEventListener('click', () => {
+  ['filt-q','filt-nome','filt-auto','filt-da','filt-a','filt-pmin','filt-pmax'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('filt-stato').value='';
+  loadStorico();
+});
+
+function g(id) { return document.getElementById(id).value.trim(); }
+
+async function loadStorico() {
+  const params = new URLSearchParams();
+  if (g('filt-q'))     params.set('q',    g('filt-q'));
+  if (g('filt-nome'))  params.set('nome', g('filt-nome'));
+  if (g('filt-auto'))  params.set('auto', g('filt-auto'));
+  if (g('filt-da'))    params.set('da',   g('filt-da').split('-').reverse().join('/'));
+  if (g('filt-a'))     params.set('a',    g('filt-a').split('-').reverse().join('/'));
+  if (g('filt-pmin'))  params.set('prezzo_min', g('filt-pmin'));
+  if (g('filt-pmax'))  params.set('prezzo_max', g('filt-pmax'));
+  const stato = document.getElementById('filt-stato').value;
+  if (stato) params.set('stato', stato);
+
+  const list = document.getElementById('noleggi-list');
+  try {
+    const rows = await api('/api/noleggi?' + params);
+    if (!rows) return;
+    if (!rows.length) { list.innerHTML='<div style="color:var(--text3);padding:16px 0">Nessun noleggio trovato.</div>'; return; }
+    list.innerHTML = rows.map(renderCard).join('');
+    list.querySelectorAll('.nol-hdr').forEach(h => {
+      h.addEventListener('click', () => {
+        const det = h.nextElementSibling?.nextElementSibling;
+        const arrow = h.querySelector('.nol-arrow');
+        if (!det) return;
+        const open = det.classList.toggle('open');
+        if (arrow) arrow.classList.toggle('open', open);
+      });
+    });
+  } catch(e) { list.innerHTML=`<div style="color:var(--red);padding:12px">${e.message}</div>`; }
+}
+
+function fv(v) {
+  if (v===null||v===undefined||v===''||v==='nan') return '—';
+  const n = parseFloat(v);
+  if (!isNaN(n) && n===Math.floor(n) && String(v).includes('.')) return String(Math.floor(n));
+  return v;
+}
+
+function renderCard(r) {
+  const stato = r.verbale_stato || '';
+  let bCls='badge-grey', bTxt='⏳ In attesa';
+  if (stato.includes('OK'))    { bCls='badge-green'; bTxt='🟢 Verbale OK'; }
+  if (stato.includes('Danno')) { bCls='badge-red';   bTxt='🔴 Verbale – Danno'; }
+
+  const nomeCognome = [r.cl_nome, r.cl_cognome].filter(Boolean).join(' ') || r.nome_cognome || '—';
+  const nota = r.note && r.note!=='nan' ? `<div class="nol-note">${r.note}</div>` : '';
+
+  const cpLink = r.contratto_path && r.contratto_path!=='nan'
+    ? `<span class="path-link">📄 Contratto: ${r.contratto_path.split('/').pop()||r.contratto_path}</span>` : '';
+  const vpLink = r.verbale_path && r.verbale_path!=='nan'
+    ? `<span class="path-link">📋 Verbale: ${r.verbale_path.split('/').pop()||r.verbale_path}</span>` : '';
+
+  const isAdmin = USER.role==='admin';
+  const editBtn = `<button class="btn btn-secondary" style="font-size:10px;padding:4px 10px" onclick="openEdit(${r.id},event)">✏ Modifica</button>`;
+  const delBtn  = isAdmin ? `<button class="btn btn-danger" style="font-size:10px;padding:4px 10px" onclick="delNoleggio(${r.id},event)">🗑 Elimina</button>` : '';
+
+  return `
+  <div class="nol-card">
+    <div class="nol-hdr">
+      <span class="nol-arrow">▶</span>
+      <div class="nol-nome">${nomeCognome}</div>
+      <div class="nol-auto">${fv(r.marca_modello)} <span style="color:var(--text3)">(${fv(r.targa)})</span></div>
+      <div class="nol-dur">${fv(r.giorni)} gg · ${fv(r.data_inizio)} → ${fv(r.data_fine)}</div>
+      <div class="nol-price">€ ${fv(r.prezzo_noleggio)}</div>
+      <span class="badge ${bCls}">${bTxt}</span>
+    </div>
+    ${nota}
+    <div class="nol-detail">
+      <div class="detail-grid">
+        <div class="detail-row"><span class="dk">Telaio</span><span class="dv">${fv(r.telaio)}</span></div>
+        <div class="detail-row"><span class="dk">Km compresi</span><span class="dv">${fv(r.km_compresi)}</span></div>
+        <div class="detail-row"><span class="dk">Cilindrata</span><span class="dv">${fv(r.cilindrata)}</span></div>
+        <div class="detail-row"><span class="dk">€/km extra</span><span class="dv">${fv(r.km_extra)}</span></div>
+        <div class="detail-row"><span class="dk">Anno</span><span class="dv">${fv(r.anno)}</span></div>
+        <div class="detail-row"><span class="dk">Deposito</span><span class="dv">${fv(r.deposito)}</span></div>
+        <div class="detail-row"><span class="dk">Colore</span><span class="dv">${fv(r.colore)}</span></div>
+        <div class="detail-row"><span class="dk">Penale</span><span class="dv">${fv(r.penale)}</span></div>
+        <div class="detail-row"><span class="dk">Km iniziali</span><span class="dv">${fv(r.km_iniziali)}</span></div>
+        <div class="detail-row"><span class="dk">Costo violaz.</span><span class="dv">${fv(r.costo_violazione)}</span></div>
+        <div class="detail-row"><span class="dk">Alimentazione</span><span class="dv">${fv(r.alimentazione)}</span></div>
+        <div class="detail-row"><span class="dk">Ric. premium</span><span class="dv">${fv(r.riconsegna_premium)}</span></div>
+        <div class="detail-row"><span class="dk">Cliente CF</span><span class="dv">${fv(r.cl_cf)}</span></div>
+        <div class="detail-row"><span class="dk">Documento</span><span class="dv">${fv(r.cl_doc)}</span></div>
+        <div class="detail-row"><span class="dk">Patente</span><span class="dv">${fv(r.cl_pat)} ${fv(r.cl_cat)}</span></div>
+        <div class="detail-row"><span class="dk">Guidatore</span><span class="dv">${fv(r.gu_nome)} ${fv(r.gu_cognome)}</span></div>
+      </div>
+      <div>${cpLink}${vpLink}</div>
+      <div class="detail-actions">${editBtn}${delBtn}</div>
+    </div>
+  </div>`;
+}
+
+// ── DELETE / EDIT ─────────────────────────────────────────────
+async function delNoleggio(id, e) {
+  e.stopPropagation();
+  if (!confirm('Eliminare definitivamente questo noleggio?')) return;
+  try { await api(`/api/noleggi/${id}`,{method:'DELETE'}); toast('🗑 Eliminato'); loadStorico(); }
+  catch(err) { toast('Errore', err.message, true); }
+}
+
+async function openEdit(id, e) {
+  e.stopPropagation();
+  try {
+    const r = await api(`/api/noleggi/${id}`);
+    if (!r) return;
+    const form = document.getElementById('form-edit');
+    form.querySelector('[name=id]').value = id;
+    document.getElementById('edit-title').textContent =
+      `${r.cl_nome||''} ${r.cl_cognome||''} — ${r.marca_modello||''}`;
+    Object.entries(r).forEach(([k,v]) => {
+      const el = form.querySelector(`[name=${k}]`);
+      if (el) el.value = v ?? '';
+    });
+    openModal('modal-edit');
+  } catch(err) { toast('Errore', err.message, true); }
+}
+
+document.getElementById('btn-save-edit').addEventListener('click', async () => {
+  const form = document.getElementById('form-edit');
+  const id = form.querySelector('[name=id]').value;
+  const data = Object.fromEntries(new FormData(form));
+  delete data.id;
+  try {
+    await api(`/api/noleggi/${id}`,{method:'PUT',body:JSON.stringify(data)});
+    toast('✅ Noleggio aggiornato','Modifiche salvate');
+    closeModal('modal-edit'); loadStorico();
+  } catch(err) { toast('Errore', err.message, true); }
+});
+
+// ── AUTO DATA ────────────────────────────────────────────────
+let _autoData = [];
+async function loadAutoData() {
+  try {
+    _autoData = await api('/api/auto') || [];
+    const sel = document.getElementById('n-auto-sel');
+    sel.innerHTML = '<option value="">— Seleziona auto —</option>' +
+      _autoData.map(a=>`<option value="${a.id}" data-row='${JSON.stringify(a)}'>${a.marca_modello} (${a.targa})</option>`).join('');
+    sel.addEventListener('change', () => {
+      const opt = sel.selectedOptions[0];
+      if (!opt?.dataset.row) { ['n-targa','n-telaio','n-cil','n-alim','n-anno','n-colore','n-km'].forEach(id=>document.getElementById(id).value=''); return; }
+      const a = JSON.parse(opt.dataset.row);
+      document.getElementById('n-targa').value  = a.targa||'';
+      document.getElementById('n-telaio').value = a.telaio||'';
+      document.getElementById('n-cil').value    = a.cilindrata||'';
+      document.getElementById('n-alim').value   = a.alimentazione||'';
+      document.getElementById('n-anno').value   = a.anno||'';
+      document.getElementById('n-colore').value = a.colore||'';
+      document.getElementById('n-km').value     = a.km||'';
+    });
+  } catch {}
+}
+
+// ── COPIA CLIENTE → GUIDATORE ────────────────────────────────
+document.getElementById('chk-copia-dati').addEventListener('change', function() {
+  if (!this.checked) return;
+  const form = document.getElementById('form-noleggio');
+  const map = {cl_nome:'gu_nome',cl_cognome:'gu_cognome',cl_luogo:'gu_luogo',
+    cl_data_nascita:'gu_data_nascita',cl_indirizzo:'gu_indirizzo',cl_cf:'gu_cf',
+    cl_doc:'gu_doc',cl_doc_da:'gu_doc_da',cl_doc_dt:'gu_doc_dt',
+    cl_pat:'gu_pat',cl_cat:'gu_cat',cl_pat_r:'gu_pat_r',cl_pat_s:'gu_pat_s'};
+  Object.entries(map).forEach(([src,dst]) => {
+    const s = form.querySelector(`[name=${src}]`), d = form.querySelector(`[name=${dst}]`);
+    if (s && d) d.value = s.value;
+  });
+  this.checked = false;
+});
+
+// ── EXTRA TOGGLE ─────────────────────────────────────────────
+document.getElementById('btn-extra-toggle').addEventListener('click', function() {
+  const body = document.getElementById('extra-body');
+  const vis = body.style.display !== 'none';
+  body.style.display = vis ? 'none' : 'block';
+  this.textContent = vis ? 'Mostra' : 'Nascondi';
+});
+
+// ── NUOVO NOLEGGIO SUBMIT ────────────────────────────────────
+document.getElementById('form-noleggio').addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  // Calc giorni
+  if (data.data_inizio && data.data_fine) {
+    const d1=new Date(data.data_inizio), d2=new Date(data.data_fine);
+    data.giorni = String(Math.round((d2-d1)/(1000*60*60*24)));
+  }
+  data.data_contratto = new Date().toLocaleDateString('it-IT');
+  if (data.data_inizio) data.data_inizio = data.data_inizio.split('-').reverse().join('/');
+  if (data.data_fine)   data.data_fine   = data.data_fine.split('-').reverse().join('/');
+  try {
+    await api('/api/noleggi',{method:'POST',body:JSON.stringify(data)});
+    toast('✅ Noleggio salvato', `${data.cl_nome||''} ${data.cl_cognome||''} · ${data.marca_modello||''}`);
+    e.target.reset();
+    ['n-targa','n-telaio','n-cil','n-alim','n-anno','n-colore','n-km'].forEach(id=>document.getElementById(id).value='');
+    loadStorico(); loadVerbaleSelector();
+  } catch(err) { toast('Errore', err.message, true); }
+});
+
+// ── VERBALE ──────────────────────────────────────────────────
+async function loadVerbaleSelector() {
+  try {
+    const rows = await api('/api/verbali/pending') || [];
+    const sel = document.getElementById('v-noleggio');
+    sel.innerHTML = '<option value="">— Seleziona noleggio —</option>' +
+      rows.map(r=>`<option value="${r.id}" data-targa="${r.targa}" data-km="${r.km_iniziali||''}"
+        >${r.nome_cognome||''} · ${r.marca_modello||''} (${r.targa}) — ${r.data_inizio||''}</option>`).join('');
+    sel.addEventListener('change', () => {
+      const opt = sel.selectedOptions[0];
+      document.getElementById('v-targa').value  = opt?.dataset.targa || '';
+      document.getElementById('v-km-ini').value = opt?.dataset.km    || '';
+      calcKmDiff();
+    });
+  } catch {}
+}
+
+function calcKmDiff() {
+  const ini = parseFloat(document.getElementById('v-km-ini').value)||0;
+  const att = parseFloat(document.getElementById('v-km-att').value)||0;
+  const diff = att - ini;
+  const el = document.getElementById('v-km-diff');
+  el.textContent = (diff>=0?'+':'') + diff + ' km';
+  el.style.color = diff>=0 ? '#33aa55' : '#cc4444';
+}
+
+document.getElementById('fuel-bar').querySelectorAll('.fuel-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.fuel-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('v-carb').value = btn.dataset.val;
+  });
+});
+
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    const group = pill.dataset.group;
+    document.querySelectorAll(`.pill[data-group="${group}"]`).forEach(p=>p.classList.remove('active'));
+    pill.classList.add('active');
+    const map = {'riconsegna':'v-tipo-ric','pulizia':'v-pulizia','oggetti':'v-oggetti','danno':'v-danno','tipo-danno':'v-tipo-danno'};
+    const hid = map[group];
+    if (hid) document.getElementById(hid).value = pill.dataset.val;
+    if (group==='danno') document.getElementById('danno-details').style.display = pill.dataset.val==='Sì'?'block':'none';
+  });
+});
+
+document.getElementById('form-verbale').addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  data.noleggio_id = parseInt(data.noleggio_id||0);
+  if (!data.noleggio_id) { toast('Seleziona un noleggio','',true); return; }
+  if (!data.operatore_nome?.trim()) { toast('Inserisci il nome operatore','',true); return; }
+  data.operatore = (data.operatore_nome||'') + ' ' + (data.operatore_cognome||'');
+  data.pulizia_premium = document.getElementById('v-pul-prem').checked ? 'Sì' : 'No';
+  data.stato = data.danno==='Sì' ? '🔴 Danno' : '🟢 OK';
+  if (data.data) data.data = data.data.split('-').reverse().join('/');
+  try {
+    await api('/api/verbali',{method:'POST',body:JSON.stringify(data)});
+    toast('✅ Verbale salvato', data.stato);
+    e.target.reset();
+    document.getElementById('danno-details').style.display='none';
+    document.getElementById('v-km-diff').textContent='—';
+    loadVerbaleSelector(); loadStorico();
+  } catch(err) { toast('Errore', err.message, true); }
+});
+
+// ── AUTO PAGE ────────────────────────────────────────────────
+async function loadAutoPage() {
+  const list = document.getElementById('auto-list');
+  try {
+    const autos = await api('/api/auto') || [];
+    if (!autos.length) { list.innerHTML='<div style="color:var(--text3);padding:16px 0">Nessun veicolo.</div>'; return; }
+    list.innerHTML=`<div class="card" style="overflow-x:auto"><table class="data-table">
+      <thead><tr><th>Marca / Modello</th><th>Targa</th><th>Anno</th><th>Alimentazione</th><th>Colore</th><th>Km</th></tr></thead>
+      <tbody>${autos.map(a=>`<tr>
+        <td>${a.marca_modello||'—'}</td><td>${a.targa||'—'}</td><td>${a.anno||'—'}</td>
+        <td>${a.alimentazione||'—'}</td><td>${a.colore||'—'}</td><td>${a.km??'—'}</td>
+      </tr>`).join('')}</tbody></table></div>`;
+  } catch(err) { list.innerHTML=`<div style="color:var(--red)">${err.message}</div>`; }
+}
+
+document.getElementById('btn-add-auto').addEventListener('click', () => openModal('modal-auto'));
+document.getElementById('btn-save-auto').addEventListener('click', async () => {
+  const data = Object.fromEntries(new FormData(document.getElementById('form-auto')));
+  data.km = parseInt(data.km||0);
+  try {
+    await api('/api/auto',{method:'POST',body:JSON.stringify(data)});
+    toast('✅ Veicolo salvato');
+    closeModal('modal-auto');
+    document.getElementById('form-auto').reset();
+    loadAutoPage(); loadAutoData();
+  } catch(err) { toast('Errore', err.message, true); }
+});
+
+// ── LOGS ─────────────────────────────────────────────────────
+async function loadLogs() {
+  try {
+    const logs = await api('/api/logs') || [];
+    document.getElementById('logs-body').innerHTML = logs.map(l=>`<tr>
+      <td>${l.ts||''}</td><td>${l.username||''}</td><td>${l.role||''}</td>
+      <td class="${l.success?'ok':'fail'}">${l.success?'✅ OK':'❌ Fallito'}</td>
+      <td>${l.ip||'—'}</td><td>${l.os_info||'—'}</td>
+    </tr>`).join('');
+  } catch(err) { toast('Errore log', err.message, true); }
+}
+document.getElementById('btn-reload-logs').addEventListener('click', loadLogs);
+
+// ── MODALS ────────────────────────────────────────────────────
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
