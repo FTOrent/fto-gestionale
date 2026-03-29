@@ -604,7 +604,7 @@ input[readonly]{color:var(--text3)}
           </div>
         </div><!-- end grid-3 -->
 
-        <button type="submit" class="btn btn-p btn-full">✦ Salva Noleggio</button>
+        <button type="submit" class="btn btn-p btn-full">📄 Crea Contratto</button>
       </form>
     </div>
 
@@ -1125,10 +1125,23 @@ function renderCard(r){
         <div class="det-row"><span class="dk">Patente</span><span class="dv">${fv(r.cl_pat)} ${fv(r.cl_cat)}</span></div>
         <div class="det-row"><span class="dk">Guidatore</span><span class="dv">${fv(r.gu_nome)} ${fv(r.gu_cognome)}</span></div>
       </div>
-      <div>${cpL}${vpL}</div>
-      <div class="det-act">${eb}${db}</div>
+      <div>${cpL}${vpL}<span class="plink" onclick="downloadContratto(${r.id},'${(r.cl_nome||'').replace(/'/g,'')}','${(r.cl_cognome||'').replace(/'/g,'')}')">📄 Scarica Contratto PDF</span></div>
+      <div class="det-act">
+        <button class="btn btn-s" style="font-size:10px;padding:4px 10px" onclick="scaricaContratto(${r.id},event)">📄 Contratto</button>
+        ${eb}${db}
+      </div>
     </div>
   </div>`;
+}
+
+function scaricaContratto(id,e){
+  e.stopPropagation();
+  const a=document.createElement('a');
+  a.href=`/api/noleggi/${id}/contratto`;
+  a.download='';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 async function delNol(id,e){
@@ -1308,10 +1321,22 @@ document.getElementById('form-nol').addEventListener('submit',async e=>{
     }catch{}
   }
   try{
-    await api('/api/noleggi',{method:'POST',body:JSON.stringify(data)});
+    const _res=await api('/api/noleggi',{method:'POST',body:JSON.stringify(data)});
+    const _nolId=_res?.id;
     toast('✅ Noleggio salvato',`${data.cl_nome||''} ${data.cl_cognome||''} · ${data.marca_modello||''}`);
     e.target.reset();
     ['n-targa','n-telaio','n-cil','n-alim','n-anno','n-col','n-km','n-gg'].forEach(i=>document.getElementById(i).value='');
+    // Download contratto automaticamente
+    if(_nolId){
+      setTimeout(()=>{
+        const _a=document.createElement('a');
+        _a.href=`/api/noleggi/${_nolId}/contratto`;
+        _a.download='';
+        document.body.appendChild(_a);
+        _a.click();
+        document.body.removeChild(_a);
+      }, 800);
+    }
     loadStorico();loadVerbSel();
   }catch(er){toast('Errore',er.message,true);}
 });
@@ -1455,6 +1480,16 @@ async function loadLogs(){
   }
 }
 document.getElementById('btn-rlogs').addEventListener('click',loadLogs);
+
+// ── DOWNLOAD CONTRATTO ───────────────────────────────────────
+function downloadContratto(id,nome,cognome){
+  const a=document.createElement('a');
+  a.href=`/api/contratto/${id}`;
+  a.download=`contratto_${nome}_${cognome}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
 
 // ── MODALS ────────────────────────────────────────────────────
 function openModal(id){document.getElementById(id).classList.add('open');}
