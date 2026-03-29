@@ -1145,19 +1145,26 @@ function validaCF(el){
 // ── COPIA CLIENTE → GUIDATORE ────────────────────────────────
 function copiaClienteGuidatore(){
   const chk=document.getElementById('chk-copia');
-  if(!chk.checked)return;
   const map={
     'cl-nome':'gu-nome','cl-cogn':'gu-cogn','cl-luogo':'gu-luogo','cl-dn':'gu-dn',
     'cl-ind':'gu-ind','cl-cf':'gu-cf','cl-doc':'gu-doc','cl-docda':'gu-docda',
     'cl-docdt':'gu-docdt','cl-pat':'gu-pat','cl-cat':'gu-cat',
     'cl-patr':'gu-patr','cl-pats':'gu-pats'
   };
-  Object.entries(map).forEach(([s,d])=>{
-    const src=document.getElementById(s);
-    const dst=document.getElementById(d);
-    if(src&&dst)dst.value=src.value;
-  });
-  chk.checked=false;
+  if(chk.checked){
+    // Copia dati cliente → guidatore
+    Object.entries(map).forEach(([s,d])=>{
+      const src=document.getElementById(s);
+      const dst=document.getElementById(d);
+      if(src&&dst)dst.value=src.value;
+    });
+  } else {
+    // Svuota i campi guidatore
+    Object.values(map).forEach(d=>{
+      const dst=document.getElementById(d);
+      if(dst)dst.value='';
+    });
+  }
 }
 
 // ── FOTO SLOTS ───────────────────────────────────────────────
@@ -1185,15 +1192,20 @@ function rmFoto(e,slotId){
 // ── EXTRA CONDUCENTE: COMPILA CON — ─────────────────────────
 function fillExtraDash(){
   const chk=document.getElementById('chk-extra-dash');
-  if(!chk.checked)return;
   // Show extra body first
   document.getElementById('extra-body').style.display='block';
   document.getElementById('btn-extra-tog').textContent='Nascondi ▴';
-  // Fill all text inputs in extra section with —
-  document.querySelectorAll('#extra-body input[type=text]').forEach(inp=>{
-    inp.value='—';
-  });
-  chk.checked=false;
+  if(chk.checked){
+    // Compila tutti i campi testo con —
+    document.querySelectorAll('#extra-body input[type=text]').forEach(inp=>{
+      inp.value='—';
+    });
+  } else {
+    // Svuota tutti i campi
+    document.querySelectorAll('#extra-body input[type=text]').forEach(inp=>{
+      inp.value='';
+    });
+  }
 }
 
 // ── DANNO FIELDS: show correct section ───────────────────────
@@ -1340,30 +1352,44 @@ document.getElementById('btn-save-auto').addEventListener('click',async()=>{
 // ── LOGS ─────────────────────────────────────────────────────
 async function loadLogs(){
   const tbody=document.getElementById('logs-body');
-  tbody.innerHTML='<tr><td colspan="7" style="color:var(--text3);padding:12px">Caricamento…</td></tr>';
+  tbody.innerHTML='<tr><td colspan="7" style="color:var(--text3);padding:12px 8px">Caricamento…</td></tr>';
   try{
-    const logs=await api('/api/logs');
-    if(!logs){return;}
-    if(!logs.length){
-      tbody.innerHTML='<tr><td colspan="7" style="color:var(--text3);padding:12px">Nessun accesso registrato.</td></tr>';
+    const res = await fetch('/api/logs',{
+      headers:{'Authorization':`Bearer ${TOKEN}`,'Content-Type':'application/json'}
+    });
+    if(res.status===401){doLogout();return;}
+    if(res.status===403){
+      tbody.innerHTML='<tr><td colspan="7" style="color:var(--red);padding:12px 8px">❌ Solo gli amministratori possono vedere i log.</td></tr>';
+      return;
+    }
+    if(!res.ok){
+      const e=await res.json().catch(()=>({detail:'Errore server'}));
+      throw new Error(e.detail||'Errore');
+    }
+    const logs=await res.json();
+    if(!logs||!logs.length){
+      tbody.innerHTML='<tr><td colspan="7" style="color:var(--text3);padding:12px 8px">Nessun accesso registrato ancora.</td></tr>';
       return;
     }
     tbody.innerHTML=logs.map(l=>{
-      const ts=l.ts?l.ts.replace('T',' ').slice(0,19):l.timestamp||'—';
+      // Handle both ts (from DB) and timestamp fields
+      let ts = l.ts || l.timestamp || '';
+      if(ts) ts = String(ts).replace('T',' ').slice(0,19);
+      else ts = '—';
       const esito=l.success?'<span class="ok">✅ OK</span>':'<span class="fail">❌ Fallito</span>';
-      const role=l.role==='admin'?'👑 Admin':'👤 Dipendente';
+      const role=(l.role||'').includes('admin')?'👑 Admin':'👤 Dipendente';
       return `<tr>
-        <td>${ts}</td>
+        <td style="white-space:nowrap">${ts}</td>
         <td><b>${l.username||'—'}</b></td>
         <td>${role}</td>
         <td>${esito}</td>
         <td>${l.ip||'—'}</td>
         <td>${l.hostname||'—'}</td>
-        <td>${l.os_info||'—'} ${l.machine?'· '+l.machine:''}</td>
+        <td>${l.os_info||'—'}${l.machine?' · '+l.machine:''}</td>
       </tr>`;
     }).join('');
   }catch(er){
-    tbody.innerHTML=`<tr><td colspan="7" style="color:var(--red);padding:12px">Errore: ${er.message}</td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="7" style="color:var(--red);padding:12px 8px">❌ ${er.message}</td></tr>`;
   }
 }
 document.getElementById('btn-rlogs').addEventListener('click',loadLogs);
