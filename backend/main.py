@@ -26,6 +26,7 @@ TOKEN_EXPIRE_HOURS = 12
 DATABASE_URL       = os.getenv("DATABASE_URL", "")
 
 ALLOWED_ORIGINS = [
+    "https://web-production-eb644.up.railway.app",
     "https://gestionale.ftorent.it",
     "https://ftorent.it",
     "http://localhost:8000",
