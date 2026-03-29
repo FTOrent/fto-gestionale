@@ -4,8 +4,7 @@ Tutti i campi del gestionale desktop, sicurezza completa.
 """
 from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
-import io, re
-from docx import Document as DocxDocument
+import io
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
