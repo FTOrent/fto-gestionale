@@ -450,5 +450,12 @@ def get_logs(request:Request, p=Depends(admin_only)):
     rate_limit(get_ip(request))
     with db() as conn:
         cur = conn.cursor()
-        cur.execute("SELECT * FROM access_log ORDER BY ts DESC LIMIT 200")
-        return [dict(r) for r in cur.fetchall()]
+        cur.execute("""
+            SELECT id,
+                   TO_CHAR(ts AT TIME ZONE 'Europe/Rome', 'DD/MM/YYYY HH24:MI:SS') AS ts,
+                   username, role, success, ip, hostname, os_info, machine
+            FROM access_log
+            ORDER BY id DESC LIMIT 200
+        """)
+        rows = cur.fetchall()
+        return [dict(r) for r in rows]
