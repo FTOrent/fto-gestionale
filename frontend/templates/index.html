@@ -1147,6 +1147,7 @@ document.querySelectorAll('.nav-btn[data-page]').forEach(btn=>{
     document.getElementById('page-'+btn.dataset.page).classList.add('active');
     if(btn.dataset.page==='storico')loadStorico();
     if(btn.dataset.page==='logs')loadLogs();
+    if(btn.dataset.page==='changelog')loadChangelog();
     if(btn.dataset.page==='auto')loadAutoPage();
     if(btn.dataset.page==='verbale')loadVerbSel();
     if(btn.dataset.page==='nuovo')initDateFields();
@@ -1633,6 +1634,45 @@ document.getElementById('btn-save-auto').addEventListener('click',async()=>{
     loadAutoPage();loadAutoData();
   }catch(er){toast('Errore',er.message,true);}
 });
+
+// ── CHANGE LOG ───────────────────────────────────────────────
+async function loadChangelog(){
+  const tbody = document.getElementById('changelog-body');
+  tbody.innerHTML = '<tr><td colspan="5" style="color:var(--text3);padding:16px 10px">Caricamento…</td></tr>';
+  try{
+    const rows = await api('/api/change-log');
+    if(!rows || !rows.length){
+      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--text3);padding:16px 10px">Nessuna modifica registrata.</td></tr>';
+      return;
+    }
+    const actionColor = {
+      'CREA':'#16a34a', 'MODIFICA':'#d97706', 'ELIMINA':'#dc2626'
+    };
+    const actionLabel = {
+      'CREA':'➕ Crea', 'MODIFICA':'✏️ Modifica', 'ELIMINA':'🗑 Elimina'
+    };
+    tbody.innerHTML = rows.map(r => `
+      <tr style="border-bottom:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">
+        <td style="padding:8px 10px;color:var(--text2);font-size:10px;white-space:nowrap">${r.ts||'—'}</td>
+        <td style="padding:8px 10px">
+          <span style="font-weight:600;color:var(--text1)">${r.username||'—'}</span>
+          <span style="font-size:9px;color:var(--text3);margin-left:4px">${r.role==='admin'?'👑':''}</span>
+        </td>
+        <td style="padding:8px 10px">
+          <span style="font-size:10px;font-weight:700;color:${actionColor[r.action]||'var(--text2)'};
+            background:${actionColor[r.action]||'var(--text3)'}18;
+            padding:2px 8px;border-radius:20px">
+            ${actionLabel[r.action]||r.action}
+          </span>
+          <span style="font-size:9px;color:var(--text3);margin-left:6px;text-transform:uppercase">${r.entity||''}</span>
+        </td>
+        <td style="padding:8px 10px;color:var(--text2);max-width:320px">${r.description||'—'}</td>
+        <td style="padding:8px 10px;color:var(--text3);font-size:10px">${r.ip||'—'}</td>
+      </tr>`).join('');
+  }catch(e){
+    tbody.innerHTML = `<tr><td colspan="5" style="color:var(--red);padding:16px 10px">${e.message}</td></tr>`;
+  }
+}
 
 // ── LOGS ─────────────────────────────────────────────────────
 async function loadLogs(){

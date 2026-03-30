@@ -452,7 +452,11 @@ def create_auto(data:AutoIn, request:Request, p=Depends(admin_only)):
           km=EXCLUDED.km,updated_at=NOW() RETURNING id""",
           (data.marca_modello,data.targa,data.telaio,data.cilindrata,
            data.alimentazione,data.anno,data.colore,data.km))
-        return {"id":cur.fetchone()["id"]}
+        auto_id = cur.fetchone()["id"]
+        log_change(p["sub"], p["role"], "CREA", "auto", auto_id,
+            f"Aggiunto veicolo {data.marca_modello} ({data.targa})",
+            get_ip(request))
+        return {"id": auto_id}
 
 # ── LOGS ──────────────────────────────────────────────────────
 @app.get("/api/logs")
@@ -628,8 +632,34 @@ def genera_contratto(id: int, request: Request):
     )
 
 
+@app.get("/api/change-log")
+def get_change_log(request: Request, p=Depends(admin_only)):
+    rate_limit(get_ip(request))
+    with db() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id,
+                   TO_CHAR(ts AT TIME ZONE 'Europe/Rome', 'DD/MM/YYYY HH24:MI:SS') AS ts,
+                   username, role, action, entity, entity_id, description, ip
+            FROM change_log
+            ORDER BY ts DESC
+            LIMIT 200
+        """)
+        return cur.fetchall()
+
 # ── SUPABASE STORAGE HELPERS ──────────────────────────────────
 import httpx
+
+def log_change(username, role, action, entity, entity_id, description, ip):
+    """Log a change action to change_log table."""
+    try:
+        with db() as conn:
+            cur = conn.cursor()
+            cur.execute("""INSERT INTO change_log(username,role,action,entity,entity_id,description,ip)
+                VALUES(%s,%s,%s,%s,%s,%s,%s)""",
+                (username, role, action, entity, entity_id, description, ip))
+    except Exception as e:
+        print(f"[LOG] Error logging change: {e}")
 
 def storage_upload(path: str, data: bytes, content_type: str) -> bool:
     """Upload file to Supabase Storage."""
