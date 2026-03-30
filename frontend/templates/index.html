@@ -247,8 +247,16 @@ input[readonly]{color:var(--text3)}
 .br{background:#1a0a0a;color:#cc4444;border:1px solid #2a1010}
 .bw{background:var(--bg3);color:var(--text3);border:1px solid var(--border2)}
 .nol-note{font-size:9px;color:#555;font-style:italic;padding:0 14px 6px 34px}
-.nol-det{display:none;padding:10px 14px 14px 34px;border-top:1px solid var(--border)}
+.nol-det{
+  display:none;padding:10px 14px 14px 34px;
+  border-top:1px solid var(--border);
+  animation:fadeSlide .18s ease;
+}
 .nol-det.open{display:block}
+@keyframes fadeSlide{
+  from{opacity:0;transform:translateY(-6px)}
+  to{opacity:1;transform:translateY(0)}
+}
 .det-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;margin:8px 0}
 .det-row{display:flex;gap:5px;font-size:9px}
 .dk{color:var(--text3);flex:0 0 110px}
@@ -308,6 +316,7 @@ input[readonly]{color:var(--text3)}
   background:#111;border:1px solid var(--border2);border-radius:10px;
   padding:11px 16px;min-width:240px;display:none;flex-direction:column;gap:2px;
   transition:background .2s,border-color .2s;
+  animation:toastIn .2s ease;
 }
 #toast.show{display:flex}
 #toast.show.red{background:rgba(40,8,8,.95);border-color:#3a1010}
@@ -315,6 +324,10 @@ input[readonly]{color:var(--text3)}
 #toast.show.red #toast-t{color:#ff6b6b}
 #toast-s{font-size:9px;color:#1a8c42;transition:color .2s}
 #toast.show.red #toast-s{color:#cc4444}
+@keyframes toastIn{
+  from{opacity:0;transform:translateX(20px)}
+  to{opacity:1;transform:translateX(0)}
+}
 
 /* ── TABLE ─────────────────────────────────────────────── */
 .tbl{width:100%;border-collapse:collapse;font-size:10px}
@@ -1035,6 +1048,20 @@ function togglePass(){
   }
 }
 
+// ── COPY TO CLIPBOARD ───────────────────────────────────────
+function copyText(text, label){
+  navigator.clipboard.writeText(text).then(()=>{
+    toast('📋 Copiato!', label||text);
+  }).catch(()=>{
+    // fallback
+    const el=document.createElement('textarea');
+    el.value=text;document.body.appendChild(el);
+    el.select();document.execCommand('copy');
+    document.body.removeChild(el);
+    toast('📋 Copiato!', label||text);
+  });
+}
+
 const KNOWN_USERS={
   'ak':{display:'Ak',role:'admin'},
   'toad':{display:'Toad',role:'admin'},
@@ -1220,9 +1247,9 @@ function renderCard(r){
         <div class="det-row"><span class="dk">Costo violaz.</span><span class="dv">${fv(r.costo_violazione)}</span></div>
         <div class="det-row"><span class="dk">Alimentazione</span><span class="dv">${fv(r.alimentazione)}</span></div>
         <div class="det-row"><span class="dk">Ric. premium</span><span class="dv">${fv(r.riconsegna_premium)}</span></div>
-        <div class="det-row"><span class="dk">Cliente CF</span><span class="dv">${fv(r.cl_cf)}</span></div>
-        <div class="det-row"><span class="dk">Documento</span><span class="dv">${fv(r.cl_doc)}</span></div>
-        <div class="det-row"><span class="dk">Patente</span><span class="dv">${fv(r.cl_pat)} ${fv(r.cl_cat)}</span></div>
+        <div class="det-row"><span class="dk">Cliente CF</span><span class="dv copyable" onclick="copyText('${fv(r.cl_cf)}','CF ${fv(r.cl_nome)} ${fv(r.cl_cognome)}')" title="Clicca per copiare">${fv(r.cl_cf)}</span></div>
+        <div class="det-row"><span class="dk">Documento</span><span class="dv copyable" onclick="copyText('${fv(r.cl_doc)}','Documento')" title="Clicca per copiare">${fv(r.cl_doc)}</span></div>
+        <div class="det-row"><span class="dk">Patente</span><span class="dv copyable" onclick="copyText('${fv(r.cl_pat)}','Patente')" title="Clicca per copiare">${fv(r.cl_pat)} ${fv(r.cl_cat)}</span></div>
         <div class="det-row"><span class="dk">Guidatore</span><span class="dv">${fv(r.gu_nome)} ${fv(r.gu_cognome)}</span></div>
       </div>
       <div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">
