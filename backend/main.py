@@ -562,9 +562,22 @@ def genera_contratto(id: int, request: Request):
     # Load the Word template
     import os
     from docx import Document as DocxDoc
-    template_path = os.path.join(os.path.dirname(__file__), "template", "contratto_template.docx")
-    if not os.path.exists(template_path):
-        raise HTTPException(500, "Template contratto non trovato")
+    # Try multiple possible paths
+    base = os.path.dirname(os.path.abspath(__file__))
+    possible = [
+        os.path.join(base, "template", "contratto_template.docx"),
+        os.path.join(base, "..", "template", "contratto_template.docx"),
+        "/app/backend/template/contratto_template.docx",
+        "/app/template/contratto_template.docx",
+    ]
+    template_path = None
+    for p in possible:
+        if os.path.exists(p):
+            template_path = p
+            break
+    if not template_path:
+        searched = ", ".join(possible)
+        raise HTTPException(500, f"Template non trovato. Cercato in: {searched}")
 
     doc = DocxDoc(template_path)
 
