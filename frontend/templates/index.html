@@ -27,7 +27,7 @@ img{display:block}
   background:var(--bg);z-index:1000;
 }
 /* ══ LOGIN ══════════════════════════════════════════════════ */
-#login-screen{position:fixed;inset:0;display:flex;z-index:1000;font-family:var(--f)}
+#login-screen{position:fixed;inset:0;display:flex;z-index:1000;font-family:var(--f);color-scheme:light}
 .login-left{
   width:40%;background:#0a0a0a;display:flex;flex-direction:column;
   justify-content:center;padding:0 48px 0 64px;flex-shrink:0;
@@ -40,7 +40,7 @@ img{display:block}
 .login-right{
   flex:1;background:#fff;display:flex;flex-direction:column;
   align-items:center;justify-content:center;padding:48px;
-  min-height:100vh;
+  min-height:100vh;color-scheme:light;
 }
 .login-form-box{width:100%;max-width:340px}
 .login-title{font-size:22px;font-weight:800;color:#111;letter-spacing:-.5px;margin-bottom:6px}
@@ -87,17 +87,20 @@ img{display:block}
 .linput{
   width:100%;padding:11px 42px 11px 14px;
   background:#ffffff;border:1.5px solid #ddd;
-  border-radius:10px;color:#111;font-size:13px;
+  border-radius:10px;font-size:13px;
   outline:none;box-sizing:border-box;font-family:var(--f);
-  color-scheme:light;
+  color-scheme:light;color:#111111;
+  -webkit-text-fill-color:#111111;
 }
-.linput:focus{border-color:#aaa;background:#ffffff}
+.linput:focus{border-color:#aaa;background:#ffffff;color:#111111;-webkit-text-fill-color:#111111}
+.linput::placeholder{color:#aaaaaa;-webkit-text-fill-color:#aaaaaa}
 .linput:-webkit-autofill,
 .linput:-webkit-autofill:hover,
 .linput:-webkit-autofill:focus,
 .linput:-webkit-autofill:active{
   -webkit-box-shadow:0 0 0 1000px #ffffff inset!important;
   -webkit-text-fill-color:#111111!important;
+  color:#111111!important;
 }
 .linput-icon{
   position:absolute;right:12px;top:50%;transform:translateY(-50%);
