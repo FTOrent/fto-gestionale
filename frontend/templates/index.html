@@ -407,7 +407,20 @@ input[readonly]{color:var(--text3)}
     <div class="page active" id="page-storico">
       <div class="page-hdr">
         <div class="page-title">📋 Storico Noleggi</div>
-        <div class="page-date" id="storico-date"></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="page-date" id="storico-date"></div>
+          <button class="btn btn-s" id="btn-backup" onclick="toggleBackup()">💾 Backup</button>
+        </div>
+      </div>
+      <!-- Backup bar -->
+      <div id="backup-bar" style="display:none;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;margin-bottom:12px;display:none;align-items:center;gap:12px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);cursor:pointer;font-weight:600">
+          <input type="checkbox" id="chk-tutti" onchange="selezionaTutti(this.checked)"> Seleziona tutti
+        </label>
+        <span id="backup-count" style="font-size:10px;color:var(--text3)">0 selezionati</span>
+        <div style="flex:1"></div>
+        <button class="btn btn-s" onclick="cancellaBackup()" style="font-size:10px">✕ Annulla</button>
+        <button class="btn btn-p" onclick="scaricaBackup()" style="font-size:10px">⬇ Scarica selezionati</button>
       </div>
       <div class="filt-bar">
         <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="🔍 cliente, auto, targa…" style="min-width:200px"></div>
@@ -1101,10 +1114,13 @@ async function loadStorico(){
     if(!rows)return;
     if(!rows.length){list.innerHTML='<div style="color:var(--text3);padding:16px 0">Nessun noleggio trovato.</div>';return;}
     list.innerHTML=rows.map(renderCard).join('');
-    list.querySelectorAll('.nol-hdr').forEach(h=>{
-      h.addEventListener('click',()=>{
-        const det=h.nextElementSibling?.nextElementSibling;
-        const arr=h.querySelector('.nol-arrow');
+    // Click anywhere on card header to toggle
+    list.querySelectorAll('.nol-card').forEach(card=>{
+      card.querySelector('.nol-hdr').addEventListener('click', e=>{
+        // Don't toggle if clicking a button inside header
+        if(e.target.closest('button')||e.target.closest('.badge')) return;
+        const det=card.querySelector('.nol-det');
+        const arr=card.querySelector('.nol-arrow');
         if(!det)return;
         const o=det.classList.toggle('open');
         if(arr)arr.classList.toggle('open',o);
@@ -1130,10 +1146,11 @@ function renderCard(r){
   const cpL=r.contratto_path&&r.contratto_path!=='nan'?`<span class="plink">📄 Contratto: ${r.contratto_path.split('/').pop()||r.contratto_path}</span>`:'';
   const vpL=r.verbale_path&&r.verbale_path!=='nan'?`<span class="plink">📋 Verbale: ${r.verbale_path.split('/').pop()||r.verbale_path}</span>`:'';
   const isAdmin=USER.role==='admin';
-  const eb=`<button class="btn btn-s" style="font-size:10px;padding:4px 10px" onclick="openEdit(${r.id},event)">✏ Modifica</button>`;
+  const eb=`<button class="btn btn-s" style="font-size:10px;padding:4px 10px" onclick="event.stopPropagation();openEdit(${r.id},event)">✏ Modifica</button>`;
   const db=isAdmin?`<button class="btn btn-d" style="font-size:10px;padding:4px 10px" onclick="delNol(${r.id},event)">🗑 Elimina</button>`:'';
-  return`<div class="nol-card">
+  return`<div class="nol-card" data-id="${r.id}">
     <div class="nol-hdr">
+      <input type="checkbox" class="backup-chk" data-id="${r.id}" style="display:none;margin-right:4px;accent-color:var(--green);width:14px;height:14px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();aggiornaContatore()" title="Seleziona per backup">
       <span class="nol-arrow">▶</span>
       <div class="nol-nome">${nm}</div>
       <div class="nol-auto">${fv(r.marca_modello)} <span style="color:var(--text3)">(${fv(r.targa)})</span></div>
@@ -1513,6 +1530,64 @@ async function loadLogs(){
   }
 }
 document.getElementById('btn-rlogs').addEventListener('click',loadLogs);
+
+// ── BACKUP SYSTEM ────────────────────────────────────────────
+let _backupMode = false;
+
+function toggleBackup(){
+  _backupMode = !_backupMode;
+  const bar = document.getElementById('backup-bar');
+  const btn = document.getElementById('btn-backup');
+  bar.style.display = _backupMode ? 'flex' : 'none';
+  btn.textContent   = _backupMode ? '✕ Esci backup' : '💾 Backup';
+  btn.className     = _backupMode ? 'btn btn-d' : 'btn btn-s';
+  // Show/hide checkboxes
+  document.querySelectorAll('.backup-chk').forEach(c=>{
+    c.style.display = _backupMode ? 'block' : 'none';
+    c.checked = false;
+  });
+  document.getElementById('chk-tutti').checked = false;
+  aggiornaContatore();
+}
+
+function cancellaBackup(){
+  _backupMode = false;
+  toggleBackup(); toggleBackup(); // reset
+  toggleBackup(); // off
+}
+
+function selezionaTutti(val){
+  document.querySelectorAll('.backup-chk').forEach(c=>{ c.checked=val; });
+  aggiornaContatore();
+}
+
+function aggiornaContatore(){
+  const n = document.querySelectorAll('.backup-chk:checked').length;
+  document.getElementById('backup-count').textContent = n===0 ? 'Nessuno selezionato' : `${n} selezionati`;
+}
+
+async function scaricaBackup(){
+  const ids = [...document.querySelectorAll('.backup-chk:checked')].map(c=>parseInt(c.dataset.id));
+  if(!ids.length){ toast('Seleziona almeno un noleggio','',true); return; }
+  toast(`⏳ Download ${ids.length} contratti…`,'Attendere');
+  let ok=0, err=0;
+  for(const id of ids){
+    try{
+      const res = await fetch(`/api/contratto/${id}`,{headers:{'Authorization':`Bearer ${TOKEN}`}});
+      if(!res.ok){ err++; continue; }
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = `contratto_${id}.docx`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      ok++;
+      await new Promise(r=>setTimeout(r,400)); // small delay between downloads
+    }catch(e){ err++; }
+  }
+  toast(`✅ ${ok} contratti scaricati${err?` · ${err} errori`:''}`, '');
+}
 
 // ── DOWNLOAD CONTRATTO ───────────────────────────────────────
 async function downloadContratto(id,nome,cognome){
