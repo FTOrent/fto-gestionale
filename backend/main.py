@@ -465,20 +465,19 @@ def get_logs(request:Request, p=Depends(admin_only)):
 
 # ── CONTRATTO PDF ─────────────────────────────────────────────
 @app.get("/api/contratto/{id}")
-def genera_contratto_v2(id: int, request: Request, token: str = None):
+def genera_contratto(id: int, request: Request):
+    """Generate contract DOCX from template, filling all {{placeholders}}"""
+    # Auth via header
     from fastapi.security.utils import get_authorization_scheme_param
-    if token:
-        try:
-            p = verify_token(token)
-        except:
-            raise HTTPException(401, "Token non valido")
-    else:
-        auth = request.headers.get("Authorization","")
-        _, tok = get_authorization_scheme_param(auth)
-        try: p = verify_token(tok) if tok else None
-        except: raise HTTPException(401, "Non autorizzato")
+    auth = request.headers.get("Authorization", "")
+    _, tok = get_authorization_scheme_param(auth)
+    try:
+        p = verify_token(tok) if tok else None
+    except:
+        raise HTTPException(401, "Non autorizzato")
     if not p:
         raise HTTPException(401, "Non autorizzato")
+
     rate_limit(get_ip(request))
     with db() as conn:
         cur = conn.cursor()
@@ -487,185 +486,122 @@ def genera_contratto_v2(id: int, request: Request, token: str = None):
         if not r:
             raise HTTPException(404, "Noleggio non trovato")
 
-    # Build PDF
+    r = dict(r)
+
+    def v(key, default="—"):
+        val = r.get(key, "") or ""
+        if str(val).strip() in ("", "nan", "None"):
+            return default
+        return str(val).strip()
+
+    # Map all template placeholders to DB fields
+    ctx = {
+        "cliente_nome_cognome":                          f"{v('cl_nome')} {v('cl_cognome')}".strip(),
+        "cliente_luogo_nascita":                         v("cl_luogo"),
+        "cliente_data_nascita":                          v("cl_data_nascita"),
+        "cliente_indirizzo_residenza":                   v("cl_indirizzo"),
+        "cliente_codice_fiscale":                        v("cl_cf"),
+        "cliente_numero_documento":                      v("cl_doc"),
+        "cliente_documento_rilasciato_da":               v("cl_doc_da"),
+        "cliente_documento_data_rilascio":               v("cl_doc_dt"),
+        "cliente_numero_patente":                        v("cl_pat"),
+        "cliente_categoria_patente":                     v("cl_cat"),
+        "cliente_patente_data_rilascio":                 v("cl_pat_r"),
+        "cliente_patente_scadenza":                      v("cl_pat_s"),
+        "societa_nome":                                  v("soc_nome"),
+        "societa_sede":                                  v("soc_sede"),
+        "societa_codice_fiscale":                        v("soc_cf"),
+        "societa_partita_iva":                           v("soc_piva"),
+        "guidatore_nome_cognome":                        f"{v('gu_nome')} {v('gu_cognome')}".strip(),
+        "guidatore_luogo_nascita":                       v("gu_luogo"),
+        "guidatore_data_nascita":                        v("gu_data_nascita"),
+        "guidatore_indirizzo_residenza":                 v("gu_indirizzo"),
+        "guidatore_codice_fiscale":                      v("gu_cf"),
+        "guidatore_numero_documento":                    v("gu_doc"),
+        "guidatore_documento_rilasciato_da":             v("gu_doc_da"),
+        "guidatore_documento_data_rilascio":             v("gu_doc_dt"),
+        "guidatore_numero_patente":                      v("gu_pat"),
+        "guidatore_categoria_patente":                   v("gu_cat"),
+        "guidatore_patente_data_rilascio":               v("gu_pat_r"),
+        "guidatore_patente_scadenza":                    v("gu_pat_s"),
+        "conducente_aggiuntivo_nome_cognome":            f"{v('ex_nome')} {v('ex_cognome')}".strip(),
+        "conducente_aggiuntivo_luogo_nascita":           v("ex_luogo"),
+        "conducente_aggiuntivo_data_nascita":            v("ex_data_nascita"),
+        "conducente_aggiuntivo_indirizzo_residenza":     v("ex_indirizzo"),
+        "conducente_aggiuntivo_codice_fiscale":          v("ex_cf"),
+        "conducente_aggiuntivo_numero_documento":        v("ex_doc"),
+        "conducente_aggiuntivo_documento_rilasciato_da": v("ex_doc_da"),
+        "conducente_aggiuntivo_documento_data_rilascio": v("ex_doc_dt"),
+        "conducente_aggiuntivo_numero_patente":          v("ex_pat"),
+        "conducente_aggiuntivo_categoria_patente":       v("ex_cat"),
+        "conducente_aggiuntivo_patente_data_rilascio":   v("ex_pat_r"),
+        "conducente_aggiuntivo_patente_scadenza":        v("ex_pat_s"),
+        "marca_modello":        v("marca_modello"),
+        "targa":                v("targa"),
+        "telaio":               v("telaio"),
+        "cilindrata":           v("cilindrata"),
+        "alimentazione":        v("alimentazione"),
+        "anno":                 v("anno"),
+        "colore":               v("colore"),
+        "km":                   v("km_iniziali"),
+        "data_inizio":          v("data_inizio"),
+        "ora_inizio":           v("ora_inizio"),
+        "data_fine":            v("data_fine"),
+        "ora_fine":             v("ora_fine"),
+        "prezzo_noleggio":      v("prezzo_noleggio"),
+        "km_compresi":          v("km_compresi"),
+        "km_extra":             v("km_extra"),
+        "riconsegna_premium":   v("riconsegna_premium"),
+        "penale":               v("penale"),
+        "deposito":             v("deposito"),
+        "costo_violazione":     v("costo_violazione"),
+        "diff_carburante":      v("diff_carburante"),
+        "firma_data":           v("data_contratto") if v("data_contratto") != "—" else datetime.today().strftime("%d/%m/%Y"),
+    }
+
+    # Load the Word template
+    import os
+    from docx import Document as DocxDoc
+    template_path = os.path.join(os.path.dirname(__file__), "template", "contratto_template.docx")
+    if not os.path.exists(template_path):
+        raise HTTPException(500, "Template contratto non trovato")
+
+    doc = DocxDoc(template_path)
+
+    def fill_paragraph(para):
+        """Replace {{key}} in paragraph, preserving formatting."""
+        for key, val in ctx.items():
+            ph = "{{" + key + "}}"
+            if ph not in para.text:
+                continue
+            # Rebuild runs preserving format of first run
+            full = "".join(run.text for run in para.runs)
+            if ph in full:
+                new_full = full.replace(ph, val)
+                # Put everything in first run, clear the rest
+                if para.runs:
+                    para.runs[0].text = new_full
+                    for run in para.runs[1:]:
+                        run.text = ""
+
+    for para in doc.paragraphs:
+        fill_paragraph(para)
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for para in cell.paragraphs:
+                    fill_paragraph(para)
+
+    # Return as .docx download
     buf = io.BytesIO()
-    _build_pdf(buf, dict(r))
+    doc.save(buf)
     buf.seek(0)
 
-    nome = f"contratto_{r['cl_nome']}_{r['cl_cognome']}_{id}.pdf"
-    return StreamingResponse(buf, media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename={nome}"})
+    cl = f"{r.get('cl_nome','')}_{r.get('cl_cognome','')}".replace(" ", "_")
+    nome_file = f"contratto_{cl}_{id}.docx"
 
-
-def _v(r, key, default="____________"):
-    """Get value from record, return default if empty."""
-    v = r.get(key, "") or ""
-    if str(v).strip() in ("", "nan", "—", "-"):
-        return default
-    return str(v).strip()
-
-
-def _build_pdf(buf, r):
-    from reportlab.lib.pagesizes import A4
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.units import mm
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable, Table, TableStyle
-    from reportlab.lib import colors
-    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
-
-    doc = SimpleDocTemplate(buf, pagesize=A4,
-        leftMargin=20*mm, rightMargin=20*mm,
-        topMargin=18*mm, bottomMargin=18*mm)
-
-    W = A4[0] - 40*mm
-    styles = getSampleStyleSheet()
-
-    def style(name, **kwargs):
-        s = ParagraphStyle(name, parent=styles['Normal'], **kwargs)
-        return s
-
-    S_TITLE  = style('title',  fontSize=11, fontName='Helvetica-Bold', alignment=TA_CENTER, spaceAfter=4)
-    S_SUB    = style('sub',    fontSize=9,  fontName='Helvetica',      alignment=TA_CENTER, spaceAfter=2, textColor=colors.HexColor('#444444'))
-    S_HEAD   = style('head',   fontSize=9,  fontName='Helvetica-Bold', spaceBefore=8, spaceAfter=3)
-    S_BODY   = style('body',   fontSize=8,  fontName='Helvetica',      leading=12, alignment=TA_JUSTIFY, spaceAfter=4)
-    S_FIELD  = style('field',  fontSize=8,  fontName='Helvetica',      leading=12, spaceAfter=2)
-    S_SIGN   = style('sign',   fontSize=8,  fontName='Helvetica',      spaceBefore=6, spaceAfter=2)
-    S_BOLD   = style('bold',   fontSize=8,  fontName='Helvetica-Bold', spaceAfter=2)
-
-    story = []
-
-    def H(txt): story.append(Paragraph(txt, S_HEAD))
-    def P(txt): story.append(Paragraph(txt, S_BODY))
-    def F(txt): story.append(Paragraph(txt, S_FIELD))
-    def SP(n=4): story.append(Spacer(1, n*mm))
-    def HR(): story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor('#cccccc'), spaceAfter=4, spaceBefore=4))
-
-    # ── INTESTAZIONE ──
-    story.append(Paragraph("CONTRATTO DI NOLEGGIO A BREVE TERMINE DI AUTOVETTURA SENZA CONDUCENTE", S_TITLE))
-    story.append(Paragraph("da valere ai sensi e per gli effetti di legge", S_SUB))
-    HR()
-
-    # Parti
-    story.append(Paragraph("<b>tra</b>", S_BODY))
-    P("FTO Rent S.r.l. (Partita IVA 14550780960) con sede legale in Lacchiarella (MI), Via Milite Ignoto n. 5, CAP 20084, nella persona del legale rappresentante pro tempore <b>Sig. Christian Arbi Karim</b>, di seguito denominata <b>\"Locatore\"</b>")
-    story.append(Paragraph("<b>e</b>", S_BODY))
-
-    P(f"Il Sig./La Sig.ra <b>{_v(r,'cl_nome')} {_v(r,'cl_cognome')}</b>, nato/a a {_v(r,'cl_luogo')} il {_v(r,'cl_data_nascita')}, residente in {_v(r,'cl_indirizzo')}, codice fiscale {_v(r,'cl_cf')}, documento d'identità n. {_v(r,'cl_doc')} rilasciato da {_v(r,'cl_doc_da')} in data {_v(r,'cl_doc_dt')}, patente di guida n. {_v(r,'cl_pat')} cat. {_v(r,'cl_cat')} rilasciata in data {_v(r,'cl_pat_r')}, con scadenza {_v(r,'cl_pat_s')}, in proprio quale persona fisica in qualità di legale rappresentante della società {_v(r,'soc_nome','—')} con sede in {_v(r,'soc_sede','—')} C.F. {_v(r,'soc_cf','—')} P.IVA {_v(r,'soc_piva','—')}, di seguito denominato/a <b>\"Cliente\"</b>")
-
-    gu_nome = f"{_v(r,'gu_nome','')} {_v(r,'gu_cognome','')}".strip()
-    if gu_nome and gu_nome != r.get('cl_nome','') + ' ' + r.get('cl_cognome',''):
-        P(f"Il Sig./La Sig.ra <b>{gu_nome}</b>, nato/a a {_v(r,'gu_luogo')} il {_v(r,'gu_data_nascita')}, residente in {_v(r,'gu_indirizzo')}, codice fiscale {_v(r,'gu_cf')}, documento d'identità n. {_v(r,'gu_doc')} rilasciato da {_v(r,'gu_doc_da')} in data {_v(r,'gu_doc_dt')}, patente di guida n. {_v(r,'gu_pat')} cat. {_v(r,'gu_cat')} rilasciata in data {_v(r,'gu_pat_r')}, con scadenza {_v(r,'gu_pat_s')}, di seguito denominato/a <b>\"Guidatore\"</b>")
-
-    ex_nome = f"{_v(r,'ex_nome','')} {_v(r,'ex_cognome','')}".strip()
-    if ex_nome and ex_nome not in ('', '— —', '____________ ____________'):
-        P(f"Il Sig./La Sig.ra <b>{ex_nome}</b>, nato/a a {_v(r,'ex_luogo')} il {_v(r,'ex_data_nascita')}, residente in {_v(r,'ex_indirizzo')}, codice fiscale {_v(r,'ex_cf')}, documento d'identità n. {_v(r,'ex_doc')} rilasciato da {_v(r,'ex_doc_da')} in data {_v(r,'ex_doc_dt')}, patente di guida n. {_v(r,'ex_pat')} cat. {_v(r,'ex_cat')} rilasciata in data {_v(r,'ex_pat_r')}, con scadenza {_v(r,'ex_pat_s')}, di seguito denominato/a <b>\"Conducente aggiuntivo\"</b>")
-
-    HR()
-
-    # ── ART. 1 — OGGETTO ──
-    H("Art. 1 — Oggetto del Contratto")
-    P("La società noleggiante concede in noleggio al Cliente come sopra identificato, che accetta, l'autovettura di seguito descritta:")
-    SP(2)
-
-    data_auto = [
-        ["Marca e modello:", _v(r,'marca_modello'), "Targa:", _v(r,'targa')],
-        ["Numero telaio:", _v(r,'telaio'), "Cilindrata:", _v(r,'cilindrata')],
-        ["Alimentazione:", _v(r,'alimentazione'), "Anno:", _v(r,'anno')],
-        ["Colore:", _v(r,'colore'), "Km alla consegna:", _v(r,'km_iniziali')],
-    ]
-    t = Table(data_auto, colWidths=[35*mm, 50*mm, 35*mm, 50*mm])
-    t.setStyle(TableStyle([
-        ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
-        ('FONTNAME', (0,0), (0,-1), 'Helvetica-Bold'),
-        ('FONTNAME', (2,0), (2,-1), 'Helvetica-Bold'),
-        ('FONTSIZE', (0,0), (-1,-1), 8),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f8f8f8')),
-        ('GRID', (0,0), (-1,-1), 0.3, colors.HexColor('#dddddd')),
-    ]))
-    story.append(t)
-    SP(3)
-
-    # ── ART. 2 — STATO AUTOVETTURA (condensed) ──
-    H("Art. 2 — Stato dell'Autovettura")
-    P("Il veicolo viene consegnato al Cliente in perfetto stato di funzionamento, manutenzione e pulizia, con il serbatoio pieno e con tutti i documenti previsti dalla legge. Il veicolo è dotato di sistema GPS; il Cliente ne autorizza l'uso per finalità di tutela e recupero del veicolo.")
-
-    # ── ART. 3 — COPERTURE ──
-    H("Art. 3 — Coperture Assicurative")
-    P("RCA massimale €10.000.000; Incendio e furto (scoperto 20%, min. €400); KASKO (scoperto 25%, min. €1.500).")
-
-    # ── ART. 4 — DURATA ──
-    H("Art. 4 — Durata del Noleggio")
-    P(f"Il noleggio inizia il <b>{_v(r,'data_inizio')}</b> alle ore <b>{_v(r,'ora_inizio')}</b> e termina il <b>{_v(r,'data_fine')}</b> alle ore <b>{_v(r,'ora_fine')}</b>. Il veicolo dovrà essere riconsegnato presso la sede operativa in Sesto San Giovanni (MI), Piazza Indro Montanelli n. 20.")
-    P(f"In caso di riconsegna in altro luogo: costo aggiuntivo di Euro <b>{_v(r,'riconsegna_premium')}</b>. In caso di ritardo: penale di Euro <b>{_v(r,'penale')}</b> per ogni giorno di ritardo.")
-
-    # ── ART. 5 — KM ──
-    H("Art. 5 — Limitazione di Chilometraggio")
-    P(f"L'utilizzo è limitato a <b>{_v(r,'km_compresi')}</b> km inclusi. In caso di eccedenza: Euro <b>{_v(r,'km_extra')}</b> per ogni km eccedente.")
-
-    # ── ART. 6 — TERRITORIO ──
-    H("Art. 6 — Limitazioni Territoriali")
-    P("L'utilizzo è consentito nell'Unione Europea. Qualsiasi espatrio richiede autorizzazione scritta del Locatore.")
-
-    # ── ART. 7 — CORRISPETTIVO ──
-    H("Art. 7 — Corrispettivo e Modalità di Pagamento")
-    P(f"Corrispettivo per il noleggio: Euro <b>{_v(r,'prezzo_noleggio')}</b>, comprensivo di <b>{_v(r,'km_compresi')}</b> km.")
-    P(f"Deposito cauzionale: Euro <b>{_v(r,'deposito')}</b>, restituibile entro 30 giorni dalla riconsegna previa verifica.")
-    P("Pagamento mediante bonifico istantaneo IBAN: <b>IT34W0306909530100000062828</b> intestato a FTO Rent S.r.l., contestualmente alla firma.")
-
-    # ── ART. 11 — RESP CLIENTE ──
-    H("Art. 11 — Responsabilità del Cliente")
-    P(f"In caso di violazione delle norme stradali con sequestro del veicolo: importo forfettario di Euro <b>{_v(r,'costo_violazione')}</b> per danni da fermo veicolo.")
-
-    # ── ART. 17 — RICONSEGNA ──
-    H("Art. 17 — Riconsegna e Verifiche")
-    P(f"In caso di differenza nel livello carburante rispetto alla consegna: tariffa di Euro <b>{_v(r,'diff_carburante')}</b> per il servizio \"Pieno\".")
-
-    # ── DISPOSIZIONI FINALI ──
-    H("Disposizioni Finali")
-    P("Il presente contratto è disciplinato dalla legge italiana. Foro competente: Tribunale di Milano. Il Cliente dichiara di aver letto attentamente il contratto e di accettarne integralmente le condizioni.")
-
-    HR()
-
-    # ── FIRME ──
-    firma_data = r.get('data_contratto') or dt.today().strftime('%d/%m/%Y')
-    story.append(Paragraph(f"Lacchiarella (MI), lì <b>{firma_data}</b>", S_SIGN))
-    SP(3)
-
-    data_firme = [
-        ["Il Locatore", "Il Cliente", "Il Guidatore (se diverso)"],
-        ["FTO Rent S.r.l.\nSig. Christian Arbi Karim", "__________________________", "__________________________"],
-    ]
-    t2 = Table(data_firme, colWidths=[W/3]*3)
-    t2.setStyle(TableStyle([
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-        ('FONTNAME', (0,1), (-1,1), 'Helvetica'),
-        ('FONTSIZE', (0,0), (-1,-1), 8),
-        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-        ('TOPPADDING', (0,0), (-1,-1), 4),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 12),
-        ('LINEBELOW', (0,1), (-1,1), 0.5, colors.HexColor('#999999')),
-    ]))
-    story.append(t2)
-    SP(4)
-
-    if ex_nome and ex_nome not in ('', '— —'):
-        story.append(Paragraph("Il Conducente Aggiuntivo", S_SIGN))
-        story.append(Paragraph("__________________________", S_SIGN))
-        SP(3)
-
-    HR()
-    # Clausole vessatorie
-    story.append(Paragraph("<b>Approvazione Specifica delle Clausole</b> (artt. 1341-1342 c.c.)", S_BOLD))
-    P("Il Cliente approva specificamente: Art. 2 Stato autovettura; Art. 4 Durata noleggio; Art. 5 Chilometraggio; Art. 6 Limitazioni territoriali; Art. 7 Corrispettivo; Art. 10 Obblighi cliente; Art. 11 Responsabilità; Art. 12 Solidarietà; Art. 14 Sinistri; Art. 16 Furto; Art. 17 Riconsegna; Art. 19 Risoluzione; Art. 20 Recesso; Art. 24 Foro competente.")
-    story.append(Paragraph(f"Lacchiarella (MI), lì <b>{firma_data}</b>", S_SIGN))
-    story.append(Paragraph("Firma del Cliente: __________________________", S_SIGN))
-
-    HR()
-    story.append(Paragraph("<b>Consenso al Trattamento dei Dati Personali</b> (GDPR - Reg. UE 2016/679)", S_BOLD))
-    P("Il sottoscritto dichiara di aver ricevuto l'informativa sul trattamento dei dati personali e presta il proprio consenso al trattamento per le finalità indicate, ivi compresa la geolocalizzazione del veicolo.")
-    story.append(Paragraph(f"Lacchiarella (MI), lì <b>{firma_data}</b>", S_SIGN))
-    story.append(Paragraph("Firma del Cliente: __________________________", S_SIGN))
-
-    doc.build(story)
+    return StreamingResponse(
+        buf,
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f"attachment; filename={nome_file}"}
+    )
