@@ -30,16 +30,17 @@ img{display:block}
 #login-screen{position:fixed;inset:0;display:flex;z-index:1000;font-family:var(--f)}
 .login-left{
   width:40%;background:#0a0a0a;display:flex;flex-direction:column;
-  justify-content:flex-start;padding:60px 48px;flex-shrink:0;
+  justify-content:center;padding:0 48px 0 64px;flex-shrink:0;
 }
 .login-left-title{
   font-size:28px;font-weight:800;color:#fff;
-  letter-spacing:-.5px;margin-bottom:10px;margin-top:0;
+  letter-spacing:-.5px;margin-bottom:10px;
 }
-.login-left-sub{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6;max-width:220px}
+.login-left-sub{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6;max-width:240px}
 .login-right{
   flex:1;background:#fff;display:flex;flex-direction:column;
   align-items:center;justify-content:center;padding:48px;
+  min-height:100vh;
 }
 .login-form-box{width:100%;max-width:340px}
 .login-title{font-size:22px;font-weight:800;color:#111;letter-spacing:-.5px;margin-bottom:6px}
@@ -314,7 +315,7 @@ input[readonly]{color:var(--text3)}
       <div class="login-field">
         <label class="login-label" for="inp-user">Username</label>
         <input class="login-input" id="inp-user" type="text"
-          placeholder="Inserisci username" autocomplete="username" oninput="updateLoginPreview()">
+          placeholder="Inserisci username" autocomplete="username" oninput="updateLoginPreview()" style="padding-right:42px">
       </div>
       <div class="login-field">
         <label class="login-label" for="inp-pass">Password</label>
