@@ -465,7 +465,20 @@ def get_logs(request:Request, p=Depends(admin_only)):
 
 # ── CONTRATTO PDF ─────────────────────────────────────────────
 @app.get("/api/noleggi/{id}/contratto")
-def genera_contratto(id: int, request: Request, p=Depends(verify_token)):
+def genera_contratto(id: int, request: Request, token: str = None, p=None):
+    # Accept token as query param for browser direct download
+    from fastapi.security.utils import get_authorization_scheme_param
+    if token:
+        try:
+            p = verify_token(token)
+        except:
+            raise HTTPException(401, "Token non valido")
+    else:
+        auth = request.headers.get("Authorization","")
+        _, tok = get_authorization_scheme_param(auth)
+        p = verify_token(tok) if tok else None
+    if not p:
+        raise HTTPException(401, "Non autorizzato")
     rate_limit(get_ip(request))
     with db() as conn:
         cur = conn.cursor()
@@ -593,7 +606,20 @@ import io
 from datetime import datetime as dt
 
 @app.get("/api/contratto/{id}")
-def genera_contratto(id: int, request: Request, p=Depends(verify_token)):
+def genera_contratto_v2(id: int, request: Request, token: str = None):
+    from fastapi.security.utils import get_authorization_scheme_param
+    if token:
+        try:
+            p = verify_token(token)
+        except:
+            raise HTTPException(401, "Token non valido")
+    else:
+        auth = request.headers.get("Authorization","")
+        _, tok = get_authorization_scheme_param(auth)
+        try: p = verify_token(tok) if tok else None
+        except: raise HTTPException(401, "Non autorizzato")
+    if not p:
+        raise HTTPException(401, "Non autorizzato")
     rate_limit(get_ip(request))
     with db() as conn:
         cur = conn.cursor()

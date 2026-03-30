@@ -354,12 +354,15 @@ input[readonly]{color:var(--text3)}
     <div class="login-field">
       <label class="login-label" for="inp-user">Username</label>
       <input class="login-input" id="inp-user" type="text"
-        placeholder="es. ak" autocomplete="username" oninput="updateLoginPreview()">
+        placeholder="Inserisci username" autocomplete="username" oninput="updateLoginPreview()">
     </div>
     <div class="login-field">
       <label class="login-label" for="inp-pass">Password</label>
-      <input class="login-input" id="inp-pass" type="password"
-        placeholder="••••••••" autocomplete="current-password">
+      <div style="position:relative">
+        <input class="login-input" id="inp-pass" type="password"
+          placeholder="Inserisci password" autocomplete="current-password" style="padding-right:40px">
+        <button type="button" onclick="togglePass()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0;line-height:1" id="btn-eye">👁</button>
+      </div>
     </div>
 
     <div class="login-err" id="login-err"></div>
@@ -918,6 +921,22 @@ const API = '';
 let TOKEN = localStorage.getItem('fto_token')||'';
 let USER  = JSON.parse(localStorage.getItem('fto_user')||'{}');
 
+// ── AUTO DATE FORMAT GG/MM/AAAA ──────────────────────────────
+function initDateFields(){
+  document.querySelectorAll('input[placeholder="GG/MM/AAAA"]').forEach(inp=>{
+    inp.setAttribute('maxlength','10');
+    inp.addEventListener('input', function(e){
+      let v = this.value.replace(/[^0-9]/g,'');
+      if(v.length>=3) v = v.slice(0,2)+'/'+v.slice(2);
+      if(v.length>=6) v = v.slice(0,5)+'/'+v.slice(5,9);
+      this.value = v;
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded', initDateFields);
+// Also call after page navigation since pages are shown/hidden
+const _origShowApp = null;
+
 // ── API ──────────────────────────────────────────────────────
 async function api(path,opts={}){
   const res = await fetch(API+path,{
@@ -945,6 +964,13 @@ document.getElementById('inp-pass').addEventListener('keydown',e=>e.key==='Enter
 document.getElementById('btn-login').addEventListener('click',doLogin);
 
 // Known users for client-side preview (no passwords — just for UI feedback)
+function togglePass(){
+  const inp=document.getElementById('inp-pass');
+  const btn=document.getElementById('btn-eye');
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
+  else{inp.type='password';btn.textContent='👁';}
+}
+
 const KNOWN_USERS={
   'ak':{display:'Ak',role:'admin'},
   'toad':{display:'Toad',role:'admin'},
@@ -1032,6 +1058,7 @@ document.querySelectorAll('.nav-btn[data-page]').forEach(btn=>{
     if(btn.dataset.page==='logs')loadLogs();
     if(btn.dataset.page==='auto')loadAutoPage();
     if(btn.dataset.page==='verbale')loadVerbSel();
+    if(btn.dataset.page==='nuovo')initDateFields();
   });
 });
 
@@ -1484,8 +1511,8 @@ document.getElementById('btn-rlogs').addEventListener('click',loadLogs);
 // ── DOWNLOAD CONTRATTO ───────────────────────────────────────
 function downloadContratto(id,nome,cognome){
   const a=document.createElement('a');
-  a.href=`/api/contratto/${id}`;
-  a.download=`contratto_${nome}_${cognome}.pdf`;
+  a.href=`/api/contratto/${id}?token=${encodeURIComponent(TOKEN)}`;
+  a.target='_blank';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
