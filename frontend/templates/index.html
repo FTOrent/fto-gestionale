@@ -70,33 +70,34 @@ img{display:block}
 .login-field{margin-bottom:14px}
 .login-label{display:block;font-size:10px;font-weight:700;letter-spacing:.8px;color:#888;margin-bottom:5px;text-transform:uppercase}
 .login-input{
-  width:100%;padding:11px 14px;background:#fff;border:1.5px solid #ddd;
+  width:100%;padding:11px 14px;background:#ffffff;border:1.5px solid #ddd;
   border-radius:10px;color:#111;font-size:13px;outline:none;
-  transition:border .18s;box-sizing:border-box;font-family:var(--f);
+  box-sizing:border-box;font-family:var(--f);color-scheme:light;
 }
-.login-input:focus{border-color:#aaa}
+.login-input:focus{border-color:#aaa;background:#ffffff}
 .login-input:-webkit-autofill,
 .login-input:-webkit-autofill:hover,
 .login-input:-webkit-autofill:focus{
-  -webkit-box-shadow:0 0 0 1000px #fff inset !important;
-  -webkit-text-fill-color:#111 !important;
-  border:1.5px solid #ddd !important;
+  -webkit-box-shadow:0 0 0 1000px #ffffff inset!important;
+  -webkit-text-fill-color:#111111!important;
 }
 .linput-wrap{
   position:relative;width:100%;
 }
 .linput{
   width:100%;padding:11px 42px 11px 14px;
-  background:#fff;border:1.5px solid #ddd;
+  background:#ffffff;border:1.5px solid #ddd;
   border-radius:10px;color:#111;font-size:13px;
   outline:none;box-sizing:border-box;font-family:var(--f);
+  color-scheme:light;
 }
-.linput:focus{border-color:#aaa}
+.linput:focus{border-color:#aaa;background:#ffffff}
 .linput:-webkit-autofill,
 .linput:-webkit-autofill:hover,
-.linput:-webkit-autofill:focus{
-  -webkit-box-shadow:0 0 0 1000px #fff inset!important;
-  -webkit-text-fill-color:#111!important;
+.linput:-webkit-autofill:focus,
+.linput:-webkit-autofill:active{
+  -webkit-box-shadow:0 0 0 1000px #ffffff inset!important;
+  -webkit-text-fill-color:#111111!important;
 }
 .linput-icon{
   position:absolute;right:12px;top:50%;transform:translateY(-50%);
