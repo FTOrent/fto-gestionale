@@ -224,13 +224,12 @@ input[readonly]{color:var(--text3)}
 .foto-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
 .foto-slot .foto-label{font-size:9px;color:var(--text3);margin-top:4px;z-index:1}
 .foto-slot .foto-icon{font-size:18px;z-index:1}
-.foto-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.foto-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;z-index:3}
 .foto-rm{
-  position:absolute;top:3px;right:3px;z-index:2;
-  background:rgba(0,0,0,.7);border:none;border-radius:3px;
+  position:absolute;top:3px;right:3px;z-index:4;
+  background:rgba(0,0,0,.8);border:none;border-radius:3px;
   color:#fff;font-size:10px;padding:1px 5px;cursor:pointer;display:none;
 }
-.foto-slot:hover .foto-rm{display:block}
 .doc-section{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:12px}
 .doc-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:8px}
 
@@ -320,10 +319,14 @@ input[readonly]{color:var(--text3)}
   position:fixed;top:14px;right:14px;z-index:9999;
   background:#111;border:1px solid var(--border2);border-radius:10px;
   padding:11px 16px;min-width:240px;display:none;flex-direction:column;gap:2px;
+  transition:background .2s,border-color .2s;
 }
 #toast.show{display:flex}
-#toast-t{font-size:11px;font-weight:700;color:var(--green)}
-#toast-s{font-size:9px;color:#1a8c42}
+#toast.show.red{background:rgba(40,8,8,.95);border-color:#3a1010}
+#toast-t{font-size:11px;font-weight:700;color:var(--green);transition:color .2s}
+#toast.show.red #toast-t{color:#ff6b6b}
+#toast-s{font-size:9px;color:#1a8c42;transition:color .2s}
+#toast.show.red #toast-s{color:#cc4444}
 
 /* ── TABLE ─────────────────────────────────────────────── */
 .tbl{width:100%;border-collapse:collapse;font-size:10px}
@@ -985,13 +988,23 @@ async function api(path,opts={}){
 
 // ── TOAST ────────────────────────────────────────────────────
 function toast(t,s='',err=false){
+  const el=document.getElementById('toast');
   document.getElementById('toast-t').textContent=t;
   document.getElementById('toast-s').textContent=s;
   document.getElementById('toast-t').style.color=err?'#cc4444':'#33aa55';
-  const el=document.getElementById('toast');
+  el.classList.remove('red');
   el.classList.add('show');
   clearTimeout(el._t);
   el._t=setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+function toastRed(t,s=''){
+  const el=document.getElementById('toast');
+  document.getElementById('toast-t').textContent=t;
+  document.getElementById('toast-s').textContent=s;
+  el.classList.add('show','red');
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>{ el.classList.remove('show','red'); },3200);
 }
 
 // ── AUTH ─────────────────────────────────────────────────────
@@ -1326,21 +1339,27 @@ function setFoto(input,slotId){
   const file=input.files[0];if(!file)return;
   const slot=document.getElementById(slotId);
   const reader=new FileReader();
-  reader.onload=e=>{
-    // remove old img
+  reader.onload=ev=>{
     slot.querySelector('img')?.remove();
     const img=document.createElement('img');
-    img.src=e.target.result;
-    img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:6px';
-    slot.appendChild(img);
+    img.src=ev.target.result;
+    img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:6px;pointer-events:none';
+    slot.insertBefore(img, slot.firstChild);
+    // Show remove button
+    const rm=slot.querySelector('.foto-rm');
+    if(rm) rm.style.display='block';
   };
   reader.readAsDataURL(file);
 }
 function rmFoto(e,slotId){
+  e.preventDefault();
   e.stopPropagation();
   const slot=document.getElementById(slotId);
   slot.querySelector('img')?.remove();
-  slot.querySelector('input[type=file]').value='';
+  const inp=slot.querySelector('input[type=file]');
+  if(inp) inp.value='';
+  const rm=slot.querySelector('.foto-rm');
+  if(rm) rm.style.display='none';
 }
 
 // ── EXTRA CONDUCENTE: COMPILA CON — ─────────────────────────
