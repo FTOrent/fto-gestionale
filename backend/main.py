@@ -219,7 +219,12 @@ if os.path.exists(static_path):
 @app.get("/")
 def root():
     idx = os.path.join(frontend_path, "templates", "index.html")
-    if os.path.exists(idx): return FileResponse(idx)
+    if os.path.exists(idx):
+        return FileResponse(idx, headers={
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0"
+        })
     return {"status": "FTO v3.2"}
 
 # ── AUTH ──────────────────────────────────────────────────────
