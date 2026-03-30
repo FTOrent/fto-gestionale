@@ -23,6 +23,9 @@ SECRET_KEY         = os.getenv("SECRET_KEY", "fto-secret-2025")
 ALGORITHM          = "HS256"
 TOKEN_EXPIRE_HOURS = 12
 DATABASE_URL       = os.getenv("DATABASE_URL", "")
+SUPABASE_URL       = "https://nirauinyoiqtqcztgpjq.supabase.co"
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
+STORAGE_BUCKET     = "documenti-noleggi"
 
 ALLOWED_ORIGINS = [
     "https://web-production-eb644.up.railway.app",
@@ -565,10 +568,10 @@ def genera_contratto(id: int, request: Request):
     # Try multiple possible paths
     base = os.path.dirname(os.path.abspath(__file__))
     possible = [
+        os.path.join(base, "templates", "contratto_template.docx"),
         os.path.join(base, "template", "contratto_template.docx"),
-        os.path.join(base, "..", "template", "contratto_template.docx"),
+        "/app/backend/templates/contratto_template.docx",
         "/app/backend/template/contratto_template.docx",
-        "/app/template/contratto_template.docx",
     ]
     template_path = None
     for p in possible:
@@ -618,3 +621,90 @@ def genera_contratto(id: int, request: Request):
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         headers={"Content-Disposition": f"attachment; filename={nome_file}"}
     )
+
+
+# ── SUPABASE STORAGE HELPERS ──────────────────────────────────
+import httpx
+
+def storage_upload(path: str, data: bytes, content_type: str) -> bool:
+    """Upload file to Supabase Storage."""
+    url = f"{SUPABASE_URL}/storage/v1/object/{STORAGE_BUCKET}/{path}"
+    headers = {
+        "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+        "Content-Type": content_type,
+        "x-upsert": "true",
+    }
+    r = httpx.put(url, content=data, headers=headers, timeout=30)
+    return r.status_code in (200, 201)
+
+def storage_get_url(path: str) -> str:
+    """Get signed URL for private file (valid 1 hour)."""
+    url = f"{SUPABASE_URL}/storage/v1/object/sign/{STORAGE_BUCKET}/{path}"
+    headers = {"Authorization": f"Bearer {SUPABASE_SERVICE_KEY}"}
+    r = httpx.post(url, json={"expiresIn": 3600}, headers=headers, timeout=10)
+    if r.status_code == 200:
+        return SUPABASE_URL + "/storage/v1" + r.json().get("signedURL", "")
+    return ""
+
+def storage_list(prefix: str) -> list:
+    """List files in a folder."""
+    url = f"{SUPABASE_URL}/storage/v1/object/list/{STORAGE_BUCKET}"
+    headers = {"Authorization": f"Bearer {SUPABASE_SERVICE_KEY}"}
+    r = httpx.post(url, json={"prefix": prefix, "limit": 100}, headers=headers, timeout=10)
+    if r.status_code == 200:
+        return r.json()
+    return []
+
+# ── UPLOAD FOTO ───────────────────────────────────────────────
+from fastapi import UploadFile, File, Form
+from typing import List
+
+@app.post("/api/noleggi/{id}/foto")
+async def upload_foto(
+    id: int,
+    file: UploadFile = File(...),
+    tipo: str = Form(...),   # es: "cl_ci_f", "cl_pa_r", "gu_pp_f" ecc
+    request: Request = None,
+    p=Depends(verify_token)
+):
+    rate_limit(get_ip(request))
+    # Verify noleggio exists
+    with db() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM noleggi WHERE id=%s", (id,))
+        if not cur.fetchone():
+            raise HTTPException(404, "Noleggio non trovato")
+
+    data = await file.read()
+    ext  = file.filename.split(".")[-1].lower() if "." in file.filename else "jpg"
+    path = f"noleggio_{id}/{tipo}.{ext}"
+    ct   = file.content_type or "image/jpeg"
+
+    ok = storage_upload(path, data, ct)
+    if not ok:
+        raise HTTPException(500, "Errore upload foto")
+    return {"ok": True, "path": path}
+
+# ── GET FOTO LIST ─────────────────────────────────────────────
+@app.get("/api/noleggi/{id}/foto")
+def get_foto(id: int, request: Request, p=Depends(verify_token)):
+    rate_limit(get_ip(request))
+    files = storage_list(f"noleggio_{id}/")
+    result = []
+    for f in files:
+        name = f.get("name","")
+        path = f"noleggio_{id}/{name}"
+        url  = storage_get_url(path)
+        if url:
+            result.append({"name": name, "url": url, "path": path})
+    return result
+
+# ── GET SINGLE FOTO ───────────────────────────────────────────
+@app.get("/api/foto")
+def get_foto_url(path: str, request: Request, p=Depends(verify_token)):
+    rate_limit(get_ip(request))
+    url = storage_get_url(path)
+    if not url:
+        raise HTTPException(404, "Foto non trovata")
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url)

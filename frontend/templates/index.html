@@ -1142,6 +1142,11 @@ async function loadStorico(){
         if(!det)return;
         const o=det.classList.toggle('open');
         if(arr)arr.classList.toggle('open',o);
+        // Load photos when opening
+        if(o){
+          const cid = card.dataset.id;
+          if(cid) loadFotoTendina(parseInt(cid));
+        }
       });
     });
   }catch(e){list.innerHTML=`<div style="color:var(--red);padding:12px">${e.message}</div>`;}
@@ -1400,6 +1405,8 @@ document.getElementById('form-nol').addEventListener('submit',async e=>{
     toast('✅ Noleggio salvato · Generazione contratto…',`${data.cl_nome||''} ${data.cl_cognome||''} · ${data.marca_modello||''}`);
     // Download contratto first, then reset
     if(_nolId){
+      // Upload all photos to Supabase Storage
+      await uploadFotoNoleggio(_nolId);
       const _nm=data.cl_nome||'cliente';
       const _cg=data.cl_cognome||'';
       await downloadContratto(_nolId,_nm,_cg);
@@ -1409,6 +1416,71 @@ document.getElementById('form-nol').addEventListener('submit',async e=>{
     loadStorico();loadVerbSel();
   }catch(er){toast('Errore',er.message,true);}
 });
+
+// ── UPLOAD FOTO NOLEGGIO ─────────────────────────────────────
+async function uploadFotoNoleggio(nolId){
+  const slots = [
+    'cl-ci-f','cl-ci-r','cl-pa-f','cl-pa-r','cl-pp-f','cl-pp-r',
+    'gu-ci-f','gu-ci-r','gu-pa-f','gu-pa-r','gu-pp-f','gu-pp-r',
+    'ex-ci-f','ex-ci-r','ex-pa-f','ex-pa-r','ex-pp-f','ex-pp-r',
+  ];
+  let uploaded = 0;
+  for(const slotId of slots){
+    const slot = document.getElementById(slotId);
+    if(!slot) continue;
+    const input = slot.querySelector('input[type=file]');
+    if(!input || !input.files || !input.files[0]) continue;
+    const file = input.files[0];
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('tipo', slotId);
+    try{
+      const res = await fetch(`/api/noleggi/${nolId}/foto`, {
+        method:'POST',
+        headers:{'Authorization':`Bearer ${TOKEN}`},
+        body: fd
+      });
+      if(res.ok) uploaded++;
+    }catch(e){ console.warn('Upload foto failed:', slotId, e); }
+  }
+  if(uploaded > 0) console.log(`✓ ${uploaded} foto caricate`);
+}
+
+// ── CARICA E MOSTRA FOTO IN TENDINA ──────────────────────────
+async function loadFotoTendina(nolId){
+  const container = document.getElementById(`foto-${nolId}`);
+  if(!container) return;
+  try{
+    const foto = await api(`/api/noleggi/${nolId}/foto`);
+    if(!foto || !foto.length){
+      container.innerHTML='<span style="font-size:9px;color:var(--text3);font-style:italic">Nessuna foto caricata.</span>';
+      return;
+    }
+    const labelMap = {
+      'cl_ci_f':'C.I. Fronte','cl_ci_r':'C.I. Retro',
+      'cl_pa_f':'Patente Fr.','cl_pa_r':'Patente Ret.',
+      'cl_pp_f':'Passap. p.1','cl_pp_r':'Passap. p.2',
+      'gu_ci_f':'Guid. C.I. Fr.','gu_ci_r':'Guid. C.I. Ret.',
+      'gu_pa_f':'Guid. Pat. Fr.','gu_pa_r':'Guid. Pat. Ret.',
+      'gu_pp_f':'Guid. Pass. p1','gu_pp_r':'Guid. Pass. p2',
+      'ex_ci_f':'Extra C.I. Fr.','ex_ci_r':'Extra C.I. Ret.',
+      'ex_pa_f':'Extra Pat. Fr.','ex_pa_r':'Extra Pat. Ret.',
+      'ex_pp_f':'Extra Pass. p1','ex_pp_r':'Extra Pass. p2',
+    };
+    container.innerHTML = foto.map(f => {
+      const key = f.name.replace(/\.[^.]+$/,'').replace(/-/g,'_');
+      const label = labelMap[key] || f.name;
+      return `<div style="text-align:center">
+        <a href="${f.url}" target="_blank">
+          <img src="${f.url}" style="width:70px;height:52px;object-fit:cover;border-radius:4px;border:1px solid var(--border2)" title="${label}">
+        </a>
+        <div style="font-size:8px;color:var(--text3);margin-top:2px">${label}</div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    container.innerHTML='<span style="font-size:9px;color:var(--text3)">Errore caricamento foto.</span>';
+  }
+}
 
 // ── VERBALE ──────────────────────────────────────────────────
 async function loadVerbSel(){
