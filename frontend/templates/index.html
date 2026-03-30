@@ -905,6 +905,23 @@ input[readonly]{color:var(--text3)}
   </div>
 </div>
 
+<!-- CONFIRM MODAL -->
+<div class="overlay" id="modal-confirm">
+  <div class="modal" style="width:420px">
+    <div class="modal-hdr">
+      <div class="modal-title" id="confirm-title">Conferma</div>
+      <button class="modal-x" onclick="closeModal('modal-confirm')">×</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-msg" style="font-size:12px;color:var(--text2);line-height:1.6"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-s" onclick="closeModal('modal-confirm')">No, annulla</button>
+      <button class="btn btn-d" id="confirm-yes-btn">Sì, elimina</button>
+    </div>
+  </div>
+</div>
+
 <!-- ADD AUTO MODAL -->
 <div class="overlay" id="modal-auto">
   <div class="modal">
@@ -1199,9 +1216,17 @@ function scaricaContratto(id,e){
 
 async function delNol(id,e){
   e.stopPropagation();
-  if(!confirm('Eliminare definitivamente questo noleggio?'))return;
-  try{await api(`/api/noleggi/${id}`,{method:'DELETE'});toast('🗑 Eliminato');loadStorico();}
-  catch(er){toast('Errore',er.message,true);}
+  openConfirm(
+    '🗑 Elimina Noleggio',
+    'Sei sicuro di voler eliminare definitivamente questo noleggio? L'operazione non può essere annullata.',
+    async ()=>{
+      try{
+        await api(`/api/noleggi/${id}`,{method:'DELETE'});
+        toast('🗑 Noleggio eliminato');
+        loadStorico();
+      }catch(er){toast('Errore',er.message,true);}
+    }
+  );
 }
 
 async function openEdit(id,e){
@@ -1616,6 +1641,14 @@ async function downloadContratto(id,nome,cognome){
 }
 
 // ── MODALS ────────────────────────────────────────────────────
+function openConfirm(title, msg, onYes){
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent   = msg;
+  const btn = document.getElementById('confirm-yes-btn');
+  btn.onclick = ()=>{ closeModal('modal-confirm'); onYes(); };
+  openModal('modal-confirm');
+}
+
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.overlay').forEach(m=>{
