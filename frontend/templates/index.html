@@ -1131,7 +1131,10 @@ async function showApp(){
   document.getElementById('app').classList.add('visible');
   document.getElementById('sb-user').textContent=(USER.role==='admin'?'👑 ':'👤 ')+(USER.display||USER.username);
   document.getElementById('sb-role').textContent=USER.role==='admin'?'Amministratore':'Dipendente';
-  if(USER.role==='admin')document.getElementById('nav-logs').style.display='flex';
+  if(USER.role==='admin'){
+    document.getElementById('nav-logs').style.display='flex';
+    document.getElementById('nav-changelog').style.display='flex';
+  }
   document.getElementById('storico-date').textContent=
     new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   loadStorico();loadAutoData();loadVerbSel();
