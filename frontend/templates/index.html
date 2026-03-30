@@ -72,9 +72,16 @@ img{display:block}
 .login-input{
   width:100%;padding:11px 14px;background:#fff;border:1.5px solid #ddd;
   border-radius:10px;color:#111;font-size:13px;outline:none;
-  transition:border .18s,background .18s;box-sizing:border-box;font-family:var(--f);
+  transition:border .18s;box-sizing:border-box;font-family:var(--f);
 }
-.login-input:focus{border-color:#aaa;background:#fff}
+.login-input:focus{border-color:#aaa}
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:hover,
+.login-input:-webkit-autofill:focus{
+  -webkit-box-shadow:0 0 0 1000px #fff inset !important;
+  -webkit-text-fill-color:#111 !important;
+  border:1.5px solid #ddd !important;
+}
 .login-err{font-size:11px;color:#dc2626;text-align:center;min-height:18px;margin-bottom:6px}
 .login-btn{
   width:100%;padding:13px;background:#111;color:#fff;border:none;
@@ -314,8 +321,10 @@ input[readonly]{color:var(--text3)}
       </div>
       <div class="login-field">
         <label class="login-label" for="inp-user">Username</label>
-        <input class="login-input" id="inp-user" type="text"
-          placeholder="Inserisci username" autocomplete="username" oninput="updateLoginPreview()" style="padding-right:42px">
+        <div style="position:relative">
+          <input class="login-input" id="inp-user" type="text"
+            placeholder="Inserisci username" autocomplete="username" oninput="updateLoginPreview()">
+        </div>
       </div>
       <div class="login-field">
         <label class="login-label" for="inp-pass">Password</label>
@@ -1985,14 +1994,7 @@ document.querySelectorAll('.overlay').forEach(m=>{
   display:block;font-size:10px;font-weight:700;letter-spacing:.8px;
   color:#999;margin-bottom:5px;text-transform:uppercase;
 }
-.login-input{
-  width:100%;padding:11px 14px;
-  background:#fff;border:1.5px solid #ddd;
-  border-radius:10px;color:#111;font-size:13px;outline:none;
-  transition:border .18s,background .18s;font-family:var(--f);
-  box-sizing:border-box;
-}
-.login-input:focus{border-color:#aaa;background:#fff;}
+/* login-input defined above */
 .login-err{
   font-size:10px;color:#e53935;text-align:center;
   min-height:16px;margin-bottom:8px;
