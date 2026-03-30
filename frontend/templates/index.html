@@ -348,10 +348,10 @@ input[readonly]{color:var(--text3)}
       <div class="login-field">
         <label class="login-label" for="inp-user">Username</label>
         <div class="linput-wrap">
-          <input class="linput" id="inp-user" type="password"
-            placeholder="Inserisci username" autocomplete="new-password"
+          <input class="linput" id="inp-user" type="text"
+            placeholder="Inserisci username" autocomplete="off"
             oninput="updateLoginPreview()"
-            style="-webkit-text-security:none;font-family:var(--f)">
+            style="background:#fff;color:#111;-webkit-text-fill-color:#111;color-scheme:light">
           <div class="linput-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -450,7 +450,7 @@ input[readonly]{color:var(--text3)}
     <!-- NUOVO NOLEGGIO -->
     <div class="page" id="page-nuovo">
       <div class="page-hdr"><div class="page-title">📄 Nuovo Noleggio</div></div>
-      <form id="form-nol" autocomplete="new-password">
+      <form id="form-nol" autocomplete="off">
 
         <!-- AUTO -->
         <div class="card">
@@ -635,7 +635,7 @@ input[readonly]{color:var(--text3)}
     <!-- VERBALE -->
     <div class="page" id="page-verbale">
       <div class="page-hdr"><div class="page-title">📝 Verbale Auto</div></div>
-      <form id="form-verb" autocomplete="new-password">
+      <form id="form-verb" autocomplete="off">
         <div class="card">
           <div class="card-sec">🔑 Seleziona Noleggio</div>
           <div class="grid">
@@ -1018,10 +1018,16 @@ function togglePass(){
   const btn=document.getElementById('btn-eye');
   if(inp.type==='password'){
     inp.type='text';
+    inp.style.background='#fff';
+    inp.style.color='#111';
+    inp.style.webkitTextFillColor='#111';
     btn.style.color='#888';
     icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
   } else {
     inp.type='password';
+    inp.style.background='#fff';
+    inp.style.color='#111';
+    inp.style.webkitTextFillColor='#111';
     btn.style.color='#bbb';
     icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
   }
@@ -2297,7 +2303,7 @@ input[readonly]{color:var(--text3)}
     <!-- NUOVO NOLEGGIO -->
     <div class="page" id="page-nuovo">
       <div class="page-hdr"><div class="page-title">📄 Nuovo Noleggio</div></div>
-      <form id="form-nol" autocomplete="new-password">
+      <form id="form-nol" autocomplete="off">
 
         <!-- AUTO -->
         <div class="card">
@@ -2482,7 +2488,7 @@ input[readonly]{color:var(--text3)}
     <!-- VERBALE -->
     <div class="page" id="page-verbale">
       <div class="page-hdr"><div class="page-title">📝 Verbale Auto</div></div>
-      <form id="form-verb" autocomplete="new-password">
+      <form id="form-verb" autocomplete="off">
         <div class="card">
           <div class="card-sec">🔑 Seleziona Noleggio</div>
           <div class="grid">
