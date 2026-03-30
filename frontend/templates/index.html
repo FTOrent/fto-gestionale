@@ -1359,19 +1359,16 @@ document.getElementById('form-nol').addEventListener('submit',async e=>{
   try{
     const _res=await api('/api/noleggi',{method:'POST',body:JSON.stringify(data)});
     const _nolId=_res?.id;
-    toast('✅ Noleggio salvato',`${data.cl_nome||''} ${data.cl_cognome||''} · ${data.marca_modello||''}`);
+    toast('✅ Noleggio salvato · Generazione contratto…',`${data.cl_nome||''} ${data.cl_cognome||''} · ${data.marca_modello||''}`);
     e.target.reset();
     ['n-targa','n-telaio','n-cil','n-alim','n-anno','n-col','n-km','n-gg'].forEach(i=>document.getElementById(i).value='');
     // Download contratto automaticamente
     if(_nolId){
       setTimeout(()=>{
-        const _a=document.createElement('a');
-        _a.href=`/api/noleggi/${_nolId}/contratto`;
-        _a.download='';
-        document.body.appendChild(_a);
-        _a.click();
-        document.body.removeChild(_a);
-      }, 800);
+        const _nm=data.cl_nome||'cliente';
+        const _cg=data.cl_cognome||'';
+        downloadContratto(_nolId,_nm,_cg);
+      }, 600);
     }
     loadStorico();loadVerbSel();
   }catch(er){toast('Errore',er.message,true);}
@@ -1518,13 +1515,29 @@ async function loadLogs(){
 document.getElementById('btn-rlogs').addEventListener('click',loadLogs);
 
 // ── DOWNLOAD CONTRATTO ───────────────────────────────────────
-function downloadContratto(id,nome,cognome){
-  const a=document.createElement('a');
-  a.href=`/api/contratto/${id}?token=${encodeURIComponent(TOKEN)}`;
-  a.target='_blank';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+async function downloadContratto(id,nome,cognome){
+  try{
+    toast('⏳ Generazione contratto…','Attendere prego');
+    const res = await fetch(`/api/contratto/${id}`,{
+      headers:{'Authorization':`Bearer ${TOKEN}`}
+    });
+    if(!res.ok){
+      const e = await res.json().catch(()=>({detail:'Errore generazione PDF'}));
+      throw new Error(e.detail||'Errore');
+    }
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `contratto_${nome||'FTO'}_${cognome||''}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('✅ Contratto scaricato!',`${nome} ${cognome}`);
+  }catch(er){
+    toast('❌ Errore contratto',er.message,true);
+  }
 }
 
 // ── MODALS ────────────────────────────────────────────────────
