@@ -1218,7 +1218,7 @@ async function delNol(id,e){
   e.stopPropagation();
   openConfirm(
     '🗑 Elimina Noleggio',
-    'Sei sicuro di voler eliminare definitivamente questo noleggio? L'operazione non può essere annullata.',
+    'Sei sicuro di voler eliminare definitivamente questo noleggio? L\u2019operazione non può essere annullata.',
     async ()=>{
       try{
         await api(`/api/noleggi/${id}`,{method:'DELETE'});
