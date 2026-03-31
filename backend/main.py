@@ -364,7 +364,11 @@ def create_noleggio(data: NoleggioIn, request:Request, p=Depends(verify_token)):
     with db() as conn:
         cur = conn.cursor()
         cur.execute(f"INSERT INTO noleggi ({cols_sql}) VALUES ({ph}) RETURNING id", vals)
-        return {"id": cur.fetchone()["id"]}
+        nol_id = cur.fetchone()["id"]
+    log_change(p["sub"], p["role"], "CREA", "noleggio", nol_id,
+        f"Creato noleggio per {data.cl_nome or ''} {data.cl_cognome or ''} — {data.marca_modello or ''} ({data.targa or ''})",
+        get_ip(request))
+    return {"id": nol_id}
 
 @app.put("/api/noleggi/{id}")
 def update_noleggio(id:int, data:NoleggioIn, request:Request, p=Depends(admin_only)):
@@ -374,14 +378,22 @@ def update_noleggio(id:int, data:NoleggioIn, request:Request, p=Depends(admin_on
     vals = [getattr(data, c) for c in update_cols] + [id]
     with db() as conn:
         conn.cursor().execute(f"UPDATE noleggi SET {set_sql} WHERE id=%s", vals)
-        return {"ok": True}
+    log_change(p["sub"], p["role"], "MODIFICA", "noleggio", id,
+        f"Modificato noleggio ID {id}",
+        get_ip(request))
+    return {"ok": True}
 
 @app.delete("/api/noleggi/{id}")
 def delete_noleggio(id:int, request:Request, p=Depends(admin_only)):
     rate_limit(get_ip(request))
     with db() as conn:
-        conn.cursor().execute("DELETE FROM noleggi WHERE id=%s",(id,))
-        return {"ok": True}
+        cur = conn.cursor()
+        cur.execute("SELECT cl_nome,cl_cognome,marca_modello FROM noleggi WHERE id=%s",(id,))
+        r = cur.fetchone()
+        desc = f"Eliminato noleggio {r['cl_nome']} {r['cl_cognome']} — {r['marca_modello']}" if r else f"Eliminato noleggio ID {id}"
+        cur.execute("DELETE FROM noleggi WHERE id=%s",(id,))
+    log_change(p["sub"], p["role"], "ELIMINA", "noleggio", id, desc, get_ip(request))
+    return {"ok": True}
 
 # ── VERBALI ───────────────────────────────────────────────────
 class VerbaleIn(BaseModel):
