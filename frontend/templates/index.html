@@ -121,6 +121,42 @@ button.linput-icon{pointer-events:auto}
 #app{display:none;height:100vh}
 #app.visible{display:flex}
 
+/* ══ LOG TABS ═══════════════════════════════════════════════ */
+.log-tab{
+  position:relative;flex:1;min-height:140px;
+  background:#2a2a2e;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;padding:28px 24px 36px;
+  cursor:pointer;overflow:hidden;
+  transition:border-color .25s,transform .2s,box-shadow .25s;
+  box-shadow:0 2px 12px rgba(0,0,0,.4);
+}
+.log-tab:hover{
+  border-color:rgba(255,255,255,.28);
+  transform:translateY(-3px);
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
+}
+.log-tab.active{border-color:rgba(255,255,255,.22)}
+.log-tab:hover .log-tab-glow,.log-tab.active .log-tab-glow{opacity:1}
+.log-tab-arrow{
+  position:absolute;top:16px;right:16px;
+  width:30px;height:30px;border-radius:9px;
+  background:rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.6);font-size:14px;font-weight:700;
+  transition:background .2s,color .2s;
+}
+.log-tab:hover .log-tab-arrow{background:rgba(255,255,255,.15);color:#fff}
+.log-tab-icon{font-size:28px;margin-bottom:12px;display:block}
+.log-tab-label{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px;margin-bottom:5px}
+.log-tab-sub{font-size:11px;color:rgba(255,255,255,.38);line-height:1.5}
+.log-tab-glow{
+  position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);
+  width:60%;height:50px;
+  background:radial-gradient(ellipse,rgba(255,255,255,.12) 0%,transparent 70%);
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+
 /* ── SIDEBAR ───────────────────────────────────────────── */
 #sidebar{
   width:192px;min-width:192px;height:100vh;
