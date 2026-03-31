@@ -822,15 +822,19 @@ input[readonly]{color:var(--text3)}
       </div>
 
       <!-- Tab buttons -->
-      <div style="display:flex;gap:14px;margin-bottom:20px">
+      <div style="display:flex;gap:16px;margin-bottom:24px">
         <div class="log-tab active" id="tab-accessi" onclick="switchLogTab('accessi')">
+          <div class="log-tab-arrow">↗</div>
           <div class="log-tab-icon">🔐</div>
           <div class="log-tab-label">Log Accessi</div>
+          <div class="log-tab-sub">Tutti gli accessi al sistema</div>
           <div class="log-tab-glow"></div>
         </div>
         <div class="log-tab" id="tab-modifiche" onclick="switchLogTab('modifiche')">
+          <div class="log-tab-arrow">↗</div>
           <div class="log-tab-icon">✏️</div>
           <div class="log-tab-label">Log Modifiche</div>
+          <div class="log-tab-sub">Creazioni, modifiche ed eliminazioni</div>
           <div class="log-tab-glow"></div>
         </div>
       </div>

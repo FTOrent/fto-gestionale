@@ -637,6 +637,12 @@ def get_change_log(request: Request, p=Depends(admin_only)):
     rate_limit(get_ip(request))
     with db() as conn:
         cur = conn.cursor()
+        # Ensure table exists
+        cur.execute("""CREATE TABLE IF NOT EXISTS change_log(
+            id SERIAL PRIMARY KEY, ts TIMESTAMPTZ DEFAULT NOW(),
+            username TEXT, role TEXT, action TEXT, entity TEXT,
+            entity_id INTEGER, description TEXT, ip TEXT
+        )""")
         cur.execute("""
             SELECT id,
                    TO_CHAR(ts AT TIME ZONE 'Europe/Rome', 'DD/MM/YYYY HH24:MI:SS') AS ts,
