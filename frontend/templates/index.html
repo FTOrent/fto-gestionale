@@ -461,7 +461,7 @@ input[readonly]{color:var(--text3)}
     <!-- STORICO -->
     <div class="page active" id="page-storico">
       <div class="page-hdr">
-        <div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Storico Noleggi</div>
+        <div class="page-title">Storico Noleggi</div>
         <div style="display:flex;align-items:center;gap:8px">
           <div class="page-date" id="storico-date"></div>
           <button class="btn btn-s" id="btn-backup" onclick="toggleBackup()">💾 Backup</button>
@@ -478,11 +478,11 @@ input[readonly]{color:var(--text3)}
         <button class="btn btn-p" onclick="scaricaBackup()" style="font-size:10px">⬇ Scarica selezionati</button>
       </div>
       <div class="filt-bar">
-        <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="🔍 cliente, auto, targa…" style="min-width:200px"></div>
-        <div class="filt-g"><label>Nome</label><input id="fn" type="text" placeholder="👤 Nome"></div>
-        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="🚗 Auto"></div>
-        <div class="filt-g"><label>📅 Da</label><input id="fda" type="date"></div>
-        <div class="filt-g"><label>📅 A</label><input id="faa" type="date"></div>
+        <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="cliente, auto, targa…" style="min-width:200px"></div>
+        <div class="filt-g"><label>Nome</label><input id="fn" type="text" placeholder="Nome"></div>
+        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto"></div>
+        <div class="filt-g"><label>Da</label><input id="fda" type="date"></div>
+        <div class="filt-g"><label>A</label><input id="faa" type="date"></div>
         <div class="filt-g"><label>€ min</label><input id="fp1" type="number" style="width:72px"></div>
         <div class="filt-g"><label>€ max</label><input id="fp2" type="number" style="width:72px"></div>
         <div class="filt-g"><label>Verbale</label>
@@ -490,7 +490,7 @@ input[readonly]{color:var(--text3)}
             <option value="">Tutti</option>
             <option value="attesa">⏳ In attesa</option>
             <option value="ok">🟢 OK</option>
-            <option value="danno">🔴 Danno</option>
+            <option value="danno">Danno</option>
           </select>
         </div>
         <button class="btn btn-s" id="btn-rfilt">↺ Reset</button>
@@ -500,12 +500,12 @@ input[readonly]{color:var(--text3)}
 
     <!-- NUOVO NOLEGGIO -->
     <div class="page" id="page-nuovo">
-      <div class="page-hdr"><div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Nuovo Noleggio</div></div>
+      <div class="page-hdr"><div class="page-title">Nuovo Noleggio</div></div>
       <form id="form-nol" autocomplete="off">
 
         <!-- AUTO -->
         <div class="card">
-          <div class="card-sec">🚗 Auto & Noleggio</div>
+          <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto & Noleggio</div>
           <div class="grid">
             <div class="fg fg-2">
               <label>Marca / Modello</label>
@@ -518,13 +518,13 @@ input[readonly]{color:var(--text3)}
             <div class="fg"><label>Anno</label><input type="text" name="anno" id="n-anno" readonly></div>
             <div class="fg"><label>Colore</label><input type="text" name="colore" id="n-col" readonly></div>
             <div class="fg"><label>Km attuali</label><input type="text" name="km_iniziali" id="n-km"></div>
-            <div class="sep">📅 Date & Orari</div>
+            <div class="sep"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Date & Orari</div>
             <div class="fg"><label>Data inizio</label><input type="date" name="data_inizio" id="n-di" oninput="calcGiorni()"></div>
             <div class="fg"><label>Ora inizio</label><input type="time" name="ora_inizio"></div>
             <div class="fg"><label>Data fine</label><input type="date" name="data_fine" id="n-df" oninput="calcGiorni()"></div>
             <div class="fg"><label>Ora fine</label><input type="time" name="ora_fine"></div>
             <div class="fg"><label>Giorni</label><input type="text" name="giorni" id="n-gg" readonly></div>
-            <div class="sep">💶 Tariffe</div>
+            <div class="sep"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><path d="M8 5h8a4 4 0 0 1 0 8H6"/></svg> Tariffe</div>
             <div class="fg"><label>Prezzo noleggio (€)</label><input type="text" name="prezzo_noleggio"></div>
             <div class="fg"><label>Km inclusi</label><input type="text" name="km_compresi"></div>
             <div class="fg"><label>€/km extra</label><input type="text" name="km_extra"></div>
@@ -541,7 +541,7 @@ input[readonly]{color:var(--text3)}
 
           <!-- CLIENTE -->
           <div class="card">
-            <div class="card-sec">👤 Cliente</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Cliente</div>
             <div class="grid-2">
               <div class="fg"><label>Nome</label><input type="text" name="cl_nome" id="cl-nome" placeholder="Nome"></div>
               <div class="fg"><label>Cognome</label><input type="text" name="cl_cognome" id="cl-cogn" placeholder="Cognome"></div>
@@ -556,7 +556,7 @@ input[readonly]{color:var(--text3)}
               <div class="fg"><label>Categoria</label><input type="text" name="cl_cat" id="cl-cat" placeholder="B, BE…"></div>
               <div class="fg"><label>Pat. rilascio</label><input type="text" name="cl_pat_r" id="cl-patr" placeholder="GG/MM/AAAA"></div>
               <div class="fg fg-2"><label>Pat. scadenza</label><input type="text" name="cl_pat_s" id="cl-pats" placeholder="GG/MM/AAAA"></div>
-              <div class="sep" style="font-size:7px">🏢 Società</div>
+              <div class="sep" style="font-size:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="1"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> Società</div>
               <div class="fg fg-2"><label>Nome società</label><input type="text" name="soc_nome"></div>
               <div class="fg fg-2"><label>Sede</label><input type="text" name="soc_sede"></div>
               <div class="fg"><label>C.F. società</label><input type="text" name="soc_cf"></div>
@@ -564,7 +564,7 @@ input[readonly]{color:var(--text3)}
             </div>
             <!-- Documenti cliente -->
             <div class="doc-section" style="margin-top:10px">
-              <div class="card-sec">📸 Documenti Cliente</div>
+              <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Documenti Cliente</div>
               <div class="doc-row">
                 <div class="doc-col">
                   <div class="doc-col-title">🪪 C.Identità</div>
@@ -572,7 +572,7 @@ input[readonly]{color:var(--text3)}
                   <div class="foto-slot" id="cl-ci-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'cl-ci-r')"><button class="foto-rm" onclick="rmFoto(event,'cl-ci-r')">✕</button></div>
                 </div>
                 <div class="doc-col">
-                  <div class="doc-col-title">🚗 Patente</div>
+                  <div class="doc-col-title">Patente</div>
                   <div class="foto-slot" id="cl-pa-f"><span class="foto-icon">📷</span><span class="foto-label">Fronte</span><input type="file" accept="image/*" onchange="setFoto(this,'cl-pa-f')"><button class="foto-rm" onclick="rmFoto(event,'cl-pa-f')">✕</button></div>
                   <div class="foto-slot" id="cl-pa-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'cl-pa-r')"><button class="foto-rm" onclick="rmFoto(event,'cl-pa-r')">✕</button></div>
                 </div>
@@ -590,7 +590,7 @@ input[readonly]{color:var(--text3)}
 
           <!-- GUIDATORE -->
           <div class="card">
-            <div class="card-sec">🧑‍✈️ Guidatore</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Guidatore</div>
             <div class="grid-2">
               <div class="fg"><label>Nome</label><input type="text" name="gu_nome" id="gu-nome" placeholder="Nome"></div>
               <div class="fg"><label>Cognome</label><input type="text" name="gu_cognome" id="gu-cogn" placeholder="Cognome"></div>
@@ -607,7 +607,7 @@ input[readonly]{color:var(--text3)}
               <div class="fg fg-2"><label>Pat. scadenza</label><input type="text" name="gu_pat_s" id="gu-pats" placeholder="GG/MM/AAAA"></div>
             </div>
             <div class="doc-section" style="margin-top:10px">
-              <div class="card-sec">📸 Documenti Guidatore</div>
+              <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Documenti Guidatore</div>
               <div class="doc-row">
                 <div class="doc-col">
                   <div class="doc-col-title">🪪 C.Identità</div>
@@ -615,7 +615,7 @@ input[readonly]{color:var(--text3)}
                   <div class="foto-slot" id="gu-ci-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'gu-ci-r')"><button class="foto-rm" onclick="rmFoto(event,'gu-ci-r')">✕</button></div>
                 </div>
                 <div class="doc-col">
-                  <div class="doc-col-title">🚗 Patente</div>
+                  <div class="doc-col-title">Patente</div>
                   <div class="foto-slot" id="gu-pa-f"><span class="foto-icon">📷</span><span class="foto-label">Fronte</span><input type="file" accept="image/*" onchange="setFoto(this,'gu-pa-f')"><button class="foto-rm" onclick="rmFoto(event,'gu-pa-f')">✕</button></div>
                   <div class="foto-slot" id="gu-pa-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'gu-pa-r')"><button class="foto-rm" onclick="rmFoto(event,'gu-pa-r')">✕</button></div>
                 </div>
@@ -656,7 +656,7 @@ input[readonly]{color:var(--text3)}
                 <div class="fg fg-2"><label>Pat. scadenza</label><input type="text" name="ex_pat_s" placeholder="GG/MM/AAAA"></div>
               </div>
               <div class="doc-section" style="margin-top:10px">
-                <div class="card-sec">📸 Documenti Extra</div>
+                <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Documenti Extra</div>
                 <div class="doc-row">
                   <div class="doc-col">
                     <div class="doc-col-title">🪪 C.Identità</div>
@@ -664,7 +664,7 @@ input[readonly]{color:var(--text3)}
                     <div class="foto-slot" id="ex-ci-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'ex-ci-r')"><button class="foto-rm" onclick="rmFoto(event,'ex-ci-r')">✕</button></div>
                   </div>
                   <div class="doc-col">
-                    <div class="doc-col-title">🚗 Patente</div>
+                    <div class="doc-col-title">Patente</div>
                     <div class="foto-slot" id="ex-pa-f"><span class="foto-icon">📷</span><span class="foto-label">Fronte</span><input type="file" accept="image/*" onchange="setFoto(this,'ex-pa-f')"><button class="foto-rm" onclick="rmFoto(event,'ex-pa-f')">✕</button></div>
                     <div class="foto-slot" id="ex-pa-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'ex-pa-r')"><button class="foto-rm" onclick="rmFoto(event,'ex-pa-r')">✕</button></div>
                   </div>
@@ -685,10 +685,10 @@ input[readonly]{color:var(--text3)}
 
     <!-- VERBALE -->
     <div class="page" id="page-verbale">
-      <div class="page-hdr"><div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Verbale Auto</div></div>
+      <div class="page-hdr"><div class="page-title">Verbale Auto</div></div>
       <form id="form-verb" autocomplete="off">
         <div class="card">
-          <div class="card-sec">🔑 Seleziona Noleggio</div>
+          <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg> Seleziona Noleggio</div>
           <div class="grid">
             <div class="fg fg-2"><label>Noleggio</label><select id="v-nol" name="noleggio_id"></select></div>
             <div class="fg"><label>Targa</label><input type="text" id="v-targa" name="targa" readonly></div>
@@ -697,7 +697,7 @@ input[readonly]{color:var(--text3)}
         </div>
 
         <div class="card">
-          <div class="card-sec">📋 Informazioni Base</div>
+          <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> Informazioni Base</div>
           <div class="grid">
             <div class="fg"><label>Data riconsegna</label><input type="date" name="data"></div>
             <div class="fg"><label>Ora riconsegna</label><input type="time" name="ora"></div>
@@ -708,7 +708,7 @@ input[readonly]{color:var(--text3)}
 
         <div class="grid-3">
           <div class="card">
-            <div class="card-sec">⛽ Livello Carburante</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V8l9-6 9 6v14"/><path d="M17 22v-6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v6"/><line x1="12" y1="8" x2="12" y2="12"/></svg> Livello Carburante</div>
             <div class="fuel-bar" id="fuel-bar">
               <button type="button" class="fuel" data-v="E">E</button>
               <button type="button" class="fuel" data-v="1/4">¼</button>
@@ -719,7 +719,7 @@ input[readonly]{color:var(--text3)}
             <input type="hidden" name="carburante" id="v-carb" value="1/2">
           </div>
           <div class="card">
-            <div class="card-sec">🔑 Tipo Riconsegna</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg> Tipo Riconsegna</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="ric" data-v="Standard">▪ Standard</button>
               <button type="button" class="pill" data-g="ric" data-v="Premium">⭐ Premium</button>
@@ -727,7 +727,7 @@ input[readonly]{color:var(--text3)}
             <input type="hidden" name="tipo_riconsegna" id="v-ric" value="Standard">
           </div>
           <div class="card">
-            <div class="card-sec">🧹 Pulizia Interna</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Pulizia Interna</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="pul" data-v="Pulita">✓ Pulita</button>
               <button type="button" class="pill" data-g="pul" data-v="Sporca">✗ Sporca</button>
@@ -741,7 +741,7 @@ input[readonly]{color:var(--text3)}
 
         <div class="grid-3" style="margin-top:0">
           <div class="card">
-            <div class="card-sec">🎒 Oggetti Personali</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Oggetti Personali</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="ogg" data-v="No">✓ Nessuno</button>
               <button type="button" class="pill" data-g="ogg" data-v="Sì">! Trovati</button>
@@ -750,10 +750,10 @@ input[readonly]{color:var(--text3)}
             <input type="text" name="oggetti_desc" placeholder="Descrizione oggetti…" style="margin-top:8px">
           </div>
           <div class="card fg-2">
-            <div class="card-sec">🔍 Ispezione Danni</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Ispezione Danni</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="dan" data-v="No">🟢 Nessun danno</button>
-              <button type="button" class="pill" data-g="dan" data-v="Sì">🔴 Danno presente</button>
+              <button type="button" class="pill" data-g="dan" data-v="Sì">Danno presente</button>
             </div>
             <input type="hidden" name="danno" id="v-dan" value="No">
             <div id="dan-det" style="display:none;margin-top:10px">
@@ -772,22 +772,22 @@ input[readonly]{color:var(--text3)}
               </div>
               <!-- Interno -->
               <div id="dan-interno" class="card" style="margin-bottom:8px">
-                <div class="card-sec">🔴 Danno Interno — Descrizione</div>
+                <div class="card-sec">Danno Interno — Descrizione</div>
                 <textarea name="descrizione_interno" rows="2" placeholder="Descrivi il danno interno: sedili, cruscotto, tetto, moquette…" style="width:100%"></textarea>
               </div>
               <!-- Esterno -->
               <div id="dan-esterno" class="card" style="display:none;margin-bottom:8px">
-                <div class="card-sec">🔴 Danno Esterno — Descrizione</div>
+                <div class="card-sec">Danno Esterno — Descrizione</div>
                 <textarea name="descrizione_esterno" rows="2" placeholder="Descrivi il danno esterno: carrozzeria, paraurti, vetri, cerchi…" style="width:100%"></textarea>
               </div>
               <!-- Entrambi -->
               <div id="dan-entrambi" style="display:none">
                 <div class="card" style="margin-bottom:8px">
-                  <div class="card-sec">🔴 Danno Interno — Descrizione</div>
+                  <div class="card-sec">Danno Interno — Descrizione</div>
                   <textarea name="descrizione_interno_e" rows="2" placeholder="Descrivi il danno interno…" style="width:100%"></textarea>
                 </div>
                 <div class="card" style="margin-bottom:8px">
-                  <div class="card-sec">🔴 Danno Esterno — Descrizione</div>
+                  <div class="card-sec">Danno Esterno — Descrizione</div>
                   <textarea name="descrizione_esterno_e" rows="2" placeholder="Descrivi il danno esterno…" style="width:100%"></textarea>
                 </div>
               </div>
@@ -798,10 +798,10 @@ input[readonly]{color:var(--text3)}
 
         <!-- Allegati foto/video -->
         <div class="card">
-          <div class="card-sec">📎 Allegati Obbligatori</div>
+          <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg> Allegati Obbligatori</div>
           <div class="grid-3">
             <div>
-              <div class="card-sec">📷 Foto Interno</div>
+              <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Foto Interno</div>
               <div class="media-slot" id="ms-int">
                 <span class="foto-icon">📷</span>
                 <div class="media-label">Foto interni (multipli)</div>
@@ -810,7 +810,7 @@ input[readonly]{color:var(--text3)}
               </div>
             </div>
             <div>
-              <div class="card-sec">📷 Foto Esterno</div>
+              <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Foto Esterno</div>
               <div class="media-slot" id="ms-ext">
                 <span class="foto-icon">📷</span>
                 <div class="media-label">Foto esterni (multipli)</div>
@@ -819,7 +819,7 @@ input[readonly]{color:var(--text3)}
               </div>
             </div>
             <div>
-              <div class="card-sec">🎥 Video Completo</div>
+              <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> Video Completo</div>
               <div class="media-slot" id="ms-vid">
                 <span class="foto-icon">🎥</span>
                 <div class="media-label">Video ispezione</div>
@@ -831,7 +831,7 @@ input[readonly]{color:var(--text3)}
         </div>
 
         <div class="card">
-          <div class="card-sec">👤 Operatore</div>
+          <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Operatore</div>
           <div class="grid">
             <div class="fg"><label>Nome</label><input type="text" name="operatore_nome" placeholder="Nome"></div>
             <div class="fg"><label>Cognome</label><input type="text" name="operatore_cognome" placeholder="Cognome"></div>
@@ -845,7 +845,7 @@ input[readonly]{color:var(--text3)}
     <!-- VEICOLI -->
     <div class="page" id="page-auto">
       <div class="page-hdr">
-        <div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Veicoli</div>
+        <div class="page-title">Veicoli</div>
         <button class="btn btn-s" id="btn-add-auto">+ Aggiungi</button>
       </div>
       <div id="auto-list"></div>
@@ -854,21 +854,21 @@ input[readonly]{color:var(--text3)}
     <!-- LOGS PAGE -->
     <div class="page" id="page-logs">
       <div class="page-hdr">
-        <div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Logs</div>
+        <div class="page-title">Logs</div>
       </div>
 
       <!-- Tab buttons -->
       <div style="display:flex;gap:16px;margin-bottom:24px">
         <div class="log-tab active" id="tab-accessi" onclick="switchLogTab('accessi')">
           <div class="log-tab-arrow">↗</div>
-          <div class="log-tab-icon">🔐</div>
+          <div class="log-tab-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
           <div class="log-tab-label">Log Accessi</div>
           <div class="log-tab-sub">Tutti gli accessi al sistema</div>
           <div class="log-tab-glow"></div>
         </div>
         <div class="log-tab" id="tab-modifiche" onclick="switchLogTab('modifiche')">
           <div class="log-tab-arrow">↗</div>
-          <div class="log-tab-icon">✏️</div>
+          <div class="log-tab-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div>
           <div class="log-tab-label">Log Modifiche</div>
           <div class="log-tab-sub">Creazioni, modifiche ed eliminazioni</div>
           <div class="log-tab-glow"></div>
@@ -912,7 +912,7 @@ input[readonly]{color:var(--text3)}
       <form id="form-edit">
         <input type="hidden" name="id">
         <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:12px" id="edit-title"></div>
-        <div class="card-sec">🚗 Auto</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Marca / Modello</label><input type="text" name="marca_modello"></div>
           <div class="fg"><label>Targa</label><input type="text" name="targa"></div>
@@ -923,7 +923,7 @@ input[readonly]{color:var(--text3)}
           <div class="fg"><label>Colore</label><input type="text" name="colore"></div>
           <div class="fg"><label>Km iniziali</label><input type="text" name="km_iniziali"></div>
         </div>
-        <div class="card-sec">📅 Date</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Date</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Data contratto</label><input type="text" name="data_contratto"></div>
           <div class="fg"><label>Data inizio</label><input type="text" name="data_inizio"></div>
@@ -932,7 +932,7 @@ input[readonly]{color:var(--text3)}
           <div class="fg"><label>Ora fine</label><input type="text" name="ora_fine"></div>
           <div class="fg"><label>Giorni</label><input type="text" name="giorni"></div>
         </div>
-        <div class="card-sec">💶 Tariffe</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><path d="M8 5h8a4 4 0 0 1 0 8H6"/></svg> Tariffe</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Prezzo (€)</label><input type="text" name="prezzo_noleggio"></div>
           <div class="fg"><label>Km compresi</label><input type="text" name="km_compresi"></div>
@@ -943,7 +943,7 @@ input[readonly]{color:var(--text3)}
           <div class="fg"><label>Costo violaz.</label><input type="text" name="costo_violazione"></div>
           <div class="fg"><label>Diff. carb.</label><input type="text" name="diff_carburante"></div>
         </div>
-        <div class="card-sec">👤 Cliente</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Cliente</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Nome</label><input type="text" name="cl_nome"></div>
           <div class="fg"><label>Cognome</label><input type="text" name="cl_cognome"></div>
@@ -959,14 +959,14 @@ input[readonly]{color:var(--text3)}
           <div class="fg"><label>Pat. rilascio</label><input type="text" name="cl_pat_r"></div>
           <div class="fg"><label>Pat. scadenza</label><input type="text" name="cl_pat_s"></div>
         </div>
-        <div class="card-sec">🏢 Società</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="1"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> Società</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Nome società</label><input type="text" name="soc_nome"></div>
           <div class="fg"><label>Sede</label><input type="text" name="soc_sede"></div>
           <div class="fg"><label>C.F.</label><input type="text" name="soc_cf"></div>
           <div class="fg"><label>P.IVA</label><input type="text" name="soc_piva"></div>
         </div>
-        <div class="card-sec">🧑‍✈️ Guidatore</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Guidatore</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Nome</label><input type="text" name="gu_nome"></div>
           <div class="fg"><label>Cognome</label><input type="text" name="gu_cognome"></div>
@@ -1324,7 +1324,7 @@ function renderCard(r){
         <div class="det-row"><span class="dk">Guidatore</span><span class="dv">${fv(r.gu_nome)} ${fv(r.gu_cognome)}</span></div>
       </div>
       <div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">
-        <div style="font-size:8px;font-weight:800;letter-spacing:1.2px;color:var(--text3);text-transform:uppercase;margin-bottom:6px">📸 Documenti Cliente</div>
+        <div style="font-size:8px;font-weight:800;letter-spacing:1.2px;color:var(--text3);text-transform:uppercase;margin-bottom:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Documenti Cliente</div>
         <div id="foto-${r.id}" style="display:flex;gap:6px;flex-wrap:wrap">
           <span style="font-size:9px;color:var(--text3);font-style:italic">Le foto vengono salvate al momento della creazione del noleggio e incluse nel backup.</span>
         </div>
@@ -1665,7 +1665,7 @@ document.getElementById('form-verb').addEventListener('submit',async e=>{
   if(!data.operatore_nome?.trim()){toast('Inserisci il nome operatore','',true);return;}
   data.operatore=(data.operatore_nome||'')+' '+(data.operatore_cognome||'');
   data.pulizia_premium=document.getElementById('v-pulp').checked?'Sì':'No';
-  data.stato=data.danno==='Sì'?'🔴 Danno':'🟢 OK';
+  data.stato=data.danno==='Sì'?'Danno':'🟢 OK';
   if(data.data)data.data=data.data.split('-').reverse().join('/');
   try{
     await api('/api/verbali',{method:'POST',body:JSON.stringify(data)});
@@ -1728,14 +1728,14 @@ async function loadChangelog(){
       'CREA':'#16a34a', 'MODIFICA':'#d97706', 'ELIMINA':'#dc2626'
     };
     const actionLabel = {
-      'CREA':'➕ Crea', 'MODIFICA':'✏️ Modifica', 'ELIMINA':'🗑 Elimina'
+      'CREA':'Crea', 'MODIFICA':'Modifica', 'ELIMINA':'Elimina'
     };
     tbody.innerHTML = rows.map(r => `
       <tr style="border-bottom:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">
         <td style="padding:8px 10px;color:var(--text2);font-size:10px;white-space:nowrap">${r.ts||'—'}</td>
         <td style="padding:8px 10px">
           <span style="font-weight:600;color:var(--text1)">${r.username||'—'}</span>
-          <span style="font-size:9px;color:var(--text3);margin-left:4px">${r.role==='admin'?'👑':''}</span>
+          <span style="font-size:9px;color:var(--text3);margin-left:4px">${''}</span>
         </td>
         <td style="padding:8px 10px">
           <span style="font-size:10px;font-weight:700;color:${actionColor[r.action]||'var(--text2)'};
@@ -1780,8 +1780,8 @@ async function loadLogs(){
       let ts = l.ts || l.timestamp || '';
       if(ts) ts = String(ts).replace('T',' ').slice(0,19);
       else ts = '—';
-      const esito=l.success?'<span class="ok">✅ OK</span>':'<span class="fail">❌ Fallito</span>';
-      const role=(l.role||'').includes('admin')?'👑 Admin':'👤 Dipendente';
+      const esito=l.success?'<span class="ok">OK</span>':'<span class="fail">Fallito</span>';
+      const role=(l.role||'').includes('admin')?'Admin':'Dipendente';
       return `<tr>
         <td style="white-space:nowrap">${ts}</td>
         <td><b>${l.username||'—'}</b></td>
@@ -2411,7 +2411,7 @@ input[readonly]{color:var(--text3)}
     <!-- STORICO -->
     <div class="page active" id="page-storico">
       <div class="page-hdr">
-        <div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Storico Noleggi</div>
+        <div class="page-title">Storico Noleggi</div>
         <div style="display:flex;align-items:center;gap:8px">
           <div class="page-date" id="storico-date"></div>
           <button class="btn btn-s" id="btn-backup" onclick="toggleBackup()">💾 Backup</button>
@@ -2428,11 +2428,11 @@ input[readonly]{color:var(--text3)}
         <button class="btn btn-p" onclick="scaricaBackup()" style="font-size:10px">⬇ Scarica selezionati</button>
       </div>
       <div class="filt-bar">
-        <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="🔍 cliente, auto, targa…" style="min-width:200px"></div>
-        <div class="filt-g"><label>Nome</label><input id="fn" type="text" placeholder="👤 Nome"></div>
-        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="🚗 Auto"></div>
-        <div class="filt-g"><label>📅 Da</label><input id="fda" type="date"></div>
-        <div class="filt-g"><label>📅 A</label><input id="faa" type="date"></div>
+        <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="cliente, auto, targa…" style="min-width:200px"></div>
+        <div class="filt-g"><label>Nome</label><input id="fn" type="text" placeholder="Nome"></div>
+        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto"></div>
+        <div class="filt-g"><label>Da</label><input id="fda" type="date"></div>
+        <div class="filt-g"><label>A</label><input id="faa" type="date"></div>
         <div class="filt-g"><label>€ min</label><input id="fp1" type="number" style="width:72px"></div>
         <div class="filt-g"><label>€ max</label><input id="fp2" type="number" style="width:72px"></div>
         <div class="filt-g"><label>Verbale</label>
@@ -2440,7 +2440,7 @@ input[readonly]{color:var(--text3)}
             <option value="">Tutti</option>
             <option value="attesa">⏳ In attesa</option>
             <option value="ok">🟢 OK</option>
-            <option value="danno">🔴 Danno</option>
+            <option value="danno">Danno</option>
           </select>
         </div>
         <button class="btn btn-s" id="btn-rfilt">↺ Reset</button>
@@ -2450,12 +2450,12 @@ input[readonly]{color:var(--text3)}
 
     <!-- NUOVO NOLEGGIO -->
     <div class="page" id="page-nuovo">
-      <div class="page-hdr"><div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Nuovo Noleggio</div></div>
+      <div class="page-hdr"><div class="page-title">Nuovo Noleggio</div></div>
       <form id="form-nol" autocomplete="off">
 
         <!-- AUTO -->
         <div class="card">
-          <div class="card-sec">🚗 Auto & Noleggio</div>
+          <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto & Noleggio</div>
           <div class="grid">
             <div class="fg fg-2">
               <label>Marca / Modello</label>
@@ -2468,13 +2468,13 @@ input[readonly]{color:var(--text3)}
             <div class="fg"><label>Anno</label><input type="text" name="anno" id="n-anno" readonly></div>
             <div class="fg"><label>Colore</label><input type="text" name="colore" id="n-col" readonly></div>
             <div class="fg"><label>Km attuali</label><input type="text" name="km_iniziali" id="n-km"></div>
-            <div class="sep">📅 Date & Orari</div>
+            <div class="sep"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Date & Orari</div>
             <div class="fg"><label>Data inizio</label><input type="date" name="data_inizio" id="n-di" oninput="calcGiorni()"></div>
             <div class="fg"><label>Ora inizio</label><input type="time" name="ora_inizio"></div>
             <div class="fg"><label>Data fine</label><input type="date" name="data_fine" id="n-df" oninput="calcGiorni()"></div>
             <div class="fg"><label>Ora fine</label><input type="time" name="ora_fine"></div>
             <div class="fg"><label>Giorni</label><input type="text" name="giorni" id="n-gg" readonly></div>
-            <div class="sep">💶 Tariffe</div>
+            <div class="sep"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><path d="M8 5h8a4 4 0 0 1 0 8H6"/></svg> Tariffe</div>
             <div class="fg"><label>Prezzo noleggio (€)</label><input type="text" name="prezzo_noleggio"></div>
             <div class="fg"><label>Km inclusi</label><input type="text" name="km_compresi"></div>
             <div class="fg"><label>€/km extra</label><input type="text" name="km_extra"></div>
@@ -2491,7 +2491,7 @@ input[readonly]{color:var(--text3)}
 
           <!-- CLIENTE -->
           <div class="card">
-            <div class="card-sec">👤 Cliente</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Cliente</div>
             <div class="grid-2">
               <div class="fg"><label>Nome</label><input type="text" name="cl_nome" id="cl-nome" placeholder="Nome"></div>
               <div class="fg"><label>Cognome</label><input type="text" name="cl_cognome" id="cl-cogn" placeholder="Cognome"></div>
@@ -2506,7 +2506,7 @@ input[readonly]{color:var(--text3)}
               <div class="fg"><label>Categoria</label><input type="text" name="cl_cat" id="cl-cat" placeholder="B, BE…"></div>
               <div class="fg"><label>Pat. rilascio</label><input type="text" name="cl_pat_r" id="cl-patr" placeholder="GG/MM/AAAA"></div>
               <div class="fg fg-2"><label>Pat. scadenza</label><input type="text" name="cl_pat_s" id="cl-pats" placeholder="GG/MM/AAAA"></div>
-              <div class="sep" style="font-size:7px">🏢 Società</div>
+              <div class="sep" style="font-size:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="1"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> Società</div>
               <div class="fg fg-2"><label>Nome società</label><input type="text" name="soc_nome"></div>
               <div class="fg fg-2"><label>Sede</label><input type="text" name="soc_sede"></div>
               <div class="fg"><label>C.F. società</label><input type="text" name="soc_cf"></div>
@@ -2514,7 +2514,7 @@ input[readonly]{color:var(--text3)}
             </div>
             <!-- Documenti cliente -->
             <div class="doc-section" style="margin-top:10px">
-              <div class="card-sec">📸 Documenti Cliente</div>
+              <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Documenti Cliente</div>
               <div class="doc-row">
                 <div class="doc-col">
                   <div class="doc-col-title">🪪 C.Identità</div>
@@ -2522,7 +2522,7 @@ input[readonly]{color:var(--text3)}
                   <div class="foto-slot" id="cl-ci-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'cl-ci-r')"><button class="foto-rm" onclick="rmFoto(event,'cl-ci-r')">✕</button></div>
                 </div>
                 <div class="doc-col">
-                  <div class="doc-col-title">🚗 Patente</div>
+                  <div class="doc-col-title">Patente</div>
                   <div class="foto-slot" id="cl-pa-f"><span class="foto-icon">📷</span><span class="foto-label">Fronte</span><input type="file" accept="image/*" onchange="setFoto(this,'cl-pa-f')"><button class="foto-rm" onclick="rmFoto(event,'cl-pa-f')">✕</button></div>
                   <div class="foto-slot" id="cl-pa-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'cl-pa-r')"><button class="foto-rm" onclick="rmFoto(event,'cl-pa-r')">✕</button></div>
                 </div>
@@ -2540,7 +2540,7 @@ input[readonly]{color:var(--text3)}
 
           <!-- GUIDATORE -->
           <div class="card">
-            <div class="card-sec">🧑‍✈️ Guidatore</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Guidatore</div>
             <div class="grid-2">
               <div class="fg"><label>Nome</label><input type="text" name="gu_nome" id="gu-nome" placeholder="Nome"></div>
               <div class="fg"><label>Cognome</label><input type="text" name="gu_cognome" id="gu-cogn" placeholder="Cognome"></div>
@@ -2557,7 +2557,7 @@ input[readonly]{color:var(--text3)}
               <div class="fg fg-2"><label>Pat. scadenza</label><input type="text" name="gu_pat_s" id="gu-pats" placeholder="GG/MM/AAAA"></div>
             </div>
             <div class="doc-section" style="margin-top:10px">
-              <div class="card-sec">📸 Documenti Guidatore</div>
+              <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Documenti Guidatore</div>
               <div class="doc-row">
                 <div class="doc-col">
                   <div class="doc-col-title">🪪 C.Identità</div>
@@ -2565,7 +2565,7 @@ input[readonly]{color:var(--text3)}
                   <div class="foto-slot" id="gu-ci-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'gu-ci-r')"><button class="foto-rm" onclick="rmFoto(event,'gu-ci-r')">✕</button></div>
                 </div>
                 <div class="doc-col">
-                  <div class="doc-col-title">🚗 Patente</div>
+                  <div class="doc-col-title">Patente</div>
                   <div class="foto-slot" id="gu-pa-f"><span class="foto-icon">📷</span><span class="foto-label">Fronte</span><input type="file" accept="image/*" onchange="setFoto(this,'gu-pa-f')"><button class="foto-rm" onclick="rmFoto(event,'gu-pa-f')">✕</button></div>
                   <div class="foto-slot" id="gu-pa-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'gu-pa-r')"><button class="foto-rm" onclick="rmFoto(event,'gu-pa-r')">✕</button></div>
                 </div>
@@ -2606,7 +2606,7 @@ input[readonly]{color:var(--text3)}
                 <div class="fg fg-2"><label>Pat. scadenza</label><input type="text" name="ex_pat_s" placeholder="GG/MM/AAAA"></div>
               </div>
               <div class="doc-section" style="margin-top:10px">
-                <div class="card-sec">📸 Documenti Extra</div>
+                <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Documenti Extra</div>
                 <div class="doc-row">
                   <div class="doc-col">
                     <div class="doc-col-title">🪪 C.Identità</div>
@@ -2614,7 +2614,7 @@ input[readonly]{color:var(--text3)}
                     <div class="foto-slot" id="ex-ci-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'ex-ci-r')"><button class="foto-rm" onclick="rmFoto(event,'ex-ci-r')">✕</button></div>
                   </div>
                   <div class="doc-col">
-                    <div class="doc-col-title">🚗 Patente</div>
+                    <div class="doc-col-title">Patente</div>
                     <div class="foto-slot" id="ex-pa-f"><span class="foto-icon">📷</span><span class="foto-label">Fronte</span><input type="file" accept="image/*" onchange="setFoto(this,'ex-pa-f')"><button class="foto-rm" onclick="rmFoto(event,'ex-pa-f')">✕</button></div>
                     <div class="foto-slot" id="ex-pa-r"><span class="foto-icon">📷</span><span class="foto-label">Retro</span><input type="file" accept="image/*" onchange="setFoto(this,'ex-pa-r')"><button class="foto-rm" onclick="rmFoto(event,'ex-pa-r')">✕</button></div>
                   </div>
@@ -2635,10 +2635,10 @@ input[readonly]{color:var(--text3)}
 
     <!-- VERBALE -->
     <div class="page" id="page-verbale">
-      <div class="page-hdr"><div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Verbale Auto</div></div>
+      <div class="page-hdr"><div class="page-title">Verbale Auto</div></div>
       <form id="form-verb" autocomplete="off">
         <div class="card">
-          <div class="card-sec">🔑 Seleziona Noleggio</div>
+          <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg> Seleziona Noleggio</div>
           <div class="grid">
             <div class="fg fg-2"><label>Noleggio</label><select id="v-nol" name="noleggio_id"></select></div>
             <div class="fg"><label>Targa</label><input type="text" id="v-targa" name="targa" readonly></div>
@@ -2647,7 +2647,7 @@ input[readonly]{color:var(--text3)}
         </div>
 
         <div class="card">
-          <div class="card-sec">📋 Informazioni Base</div>
+          <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> Informazioni Base</div>
           <div class="grid">
             <div class="fg"><label>Data riconsegna</label><input type="date" name="data"></div>
             <div class="fg"><label>Ora riconsegna</label><input type="time" name="ora"></div>
@@ -2658,7 +2658,7 @@ input[readonly]{color:var(--text3)}
 
         <div class="grid-3">
           <div class="card">
-            <div class="card-sec">⛽ Livello Carburante</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V8l9-6 9 6v14"/><path d="M17 22v-6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v6"/><line x1="12" y1="8" x2="12" y2="12"/></svg> Livello Carburante</div>
             <div class="fuel-bar" id="fuel-bar">
               <button type="button" class="fuel" data-v="E">E</button>
               <button type="button" class="fuel" data-v="1/4">¼</button>
@@ -2669,7 +2669,7 @@ input[readonly]{color:var(--text3)}
             <input type="hidden" name="carburante" id="v-carb" value="1/2">
           </div>
           <div class="card">
-            <div class="card-sec">🔑 Tipo Riconsegna</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg> Tipo Riconsegna</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="ric" data-v="Standard">▪ Standard</button>
               <button type="button" class="pill" data-g="ric" data-v="Premium">⭐ Premium</button>
@@ -2677,7 +2677,7 @@ input[readonly]{color:var(--text3)}
             <input type="hidden" name="tipo_riconsegna" id="v-ric" value="Standard">
           </div>
           <div class="card">
-            <div class="card-sec">🧹 Pulizia Interna</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Pulizia Interna</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="pul" data-v="Pulita">✓ Pulita</button>
               <button type="button" class="pill" data-g="pul" data-v="Sporca">✗ Sporca</button>
@@ -2691,7 +2691,7 @@ input[readonly]{color:var(--text3)}
 
         <div class="grid-3" style="margin-top:0">
           <div class="card">
-            <div class="card-sec">🎒 Oggetti Personali</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Oggetti Personali</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="ogg" data-v="No">✓ Nessuno</button>
               <button type="button" class="pill" data-g="ogg" data-v="Sì">! Trovati</button>
@@ -2700,10 +2700,10 @@ input[readonly]{color:var(--text3)}
             <input type="text" name="oggetti_desc" placeholder="Descrizione oggetti…" style="margin-top:8px">
           </div>
           <div class="card fg-2">
-            <div class="card-sec">🔍 Ispezione Danni</div>
+            <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Ispezione Danni</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="dan" data-v="No">🟢 Nessun danno</button>
-              <button type="button" class="pill" data-g="dan" data-v="Sì">🔴 Danno presente</button>
+              <button type="button" class="pill" data-g="dan" data-v="Sì">Danno presente</button>
             </div>
             <input type="hidden" name="danno" id="v-dan" value="No">
             <div id="dan-det" style="display:none;margin-top:10px">
@@ -2722,22 +2722,22 @@ input[readonly]{color:var(--text3)}
               </div>
               <!-- Interno -->
               <div id="dan-interno" class="card" style="margin-bottom:8px">
-                <div class="card-sec">🔴 Danno Interno — Descrizione</div>
+                <div class="card-sec">Danno Interno — Descrizione</div>
                 <textarea name="descrizione_interno" rows="2" placeholder="Descrivi il danno interno: sedili, cruscotto, tetto, moquette…" style="width:100%"></textarea>
               </div>
               <!-- Esterno -->
               <div id="dan-esterno" class="card" style="display:none;margin-bottom:8px">
-                <div class="card-sec">🔴 Danno Esterno — Descrizione</div>
+                <div class="card-sec">Danno Esterno — Descrizione</div>
                 <textarea name="descrizione_esterno" rows="2" placeholder="Descrivi il danno esterno: carrozzeria, paraurti, vetri, cerchi…" style="width:100%"></textarea>
               </div>
               <!-- Entrambi -->
               <div id="dan-entrambi" style="display:none">
                 <div class="card" style="margin-bottom:8px">
-                  <div class="card-sec">🔴 Danno Interno — Descrizione</div>
+                  <div class="card-sec">Danno Interno — Descrizione</div>
                   <textarea name="descrizione_interno_e" rows="2" placeholder="Descrivi il danno interno…" style="width:100%"></textarea>
                 </div>
                 <div class="card" style="margin-bottom:8px">
-                  <div class="card-sec">🔴 Danno Esterno — Descrizione</div>
+                  <div class="card-sec">Danno Esterno — Descrizione</div>
                   <textarea name="descrizione_esterno_e" rows="2" placeholder="Descrivi il danno esterno…" style="width:100%"></textarea>
                 </div>
               </div>
@@ -2748,10 +2748,10 @@ input[readonly]{color:var(--text3)}
 
         <!-- Allegati foto/video -->
         <div class="card">
-          <div class="card-sec">📎 Allegati Obbligatori</div>
+          <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg> Allegati Obbligatori</div>
           <div class="grid-3">
             <div>
-              <div class="card-sec">📷 Foto Interno</div>
+              <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Foto Interno</div>
               <div class="media-slot" id="ms-int">
                 <span class="foto-icon">📷</span>
                 <div class="media-label">Foto interni (multipli)</div>
@@ -2760,7 +2760,7 @@ input[readonly]{color:var(--text3)}
               </div>
             </div>
             <div>
-              <div class="card-sec">📷 Foto Esterno</div>
+              <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Foto Esterno</div>
               <div class="media-slot" id="ms-ext">
                 <span class="foto-icon">📷</span>
                 <div class="media-label">Foto esterni (multipli)</div>
@@ -2769,7 +2769,7 @@ input[readonly]{color:var(--text3)}
               </div>
             </div>
             <div>
-              <div class="card-sec">🎥 Video Completo</div>
+              <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> Video Completo</div>
               <div class="media-slot" id="ms-vid">
                 <span class="foto-icon">🎥</span>
                 <div class="media-label">Video ispezione</div>
@@ -2781,7 +2781,7 @@ input[readonly]{color:var(--text3)}
         </div>
 
         <div class="card">
-          <div class="card-sec">👤 Operatore</div>
+          <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Operatore</div>
           <div class="grid">
             <div class="fg"><label>Nome</label><input type="text" name="operatore_nome" placeholder="Nome"></div>
             <div class="fg"><label>Cognome</label><input type="text" name="operatore_cognome" placeholder="Cognome"></div>
@@ -2795,7 +2795,7 @@ input[readonly]{color:var(--text3)}
     <!-- VEICOLI -->
     <div class="page" id="page-auto">
       <div class="page-hdr">
-        <div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Veicoli</div>
+        <div class="page-title">Veicoli</div>
         <button class="btn btn-s" id="btn-add-auto">+ Aggiungi</button>
       </div>
       <div id="auto-list"></div>
@@ -2829,7 +2829,7 @@ input[readonly]{color:var(--text3)}
       <form id="form-edit">
         <input type="hidden" name="id">
         <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:12px" id="edit-title"></div>
-        <div class="card-sec">🚗 Auto</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Marca / Modello</label><input type="text" name="marca_modello"></div>
           <div class="fg"><label>Targa</label><input type="text" name="targa"></div>
@@ -2840,7 +2840,7 @@ input[readonly]{color:var(--text3)}
           <div class="fg"><label>Colore</label><input type="text" name="colore"></div>
           <div class="fg"><label>Km iniziali</label><input type="text" name="km_iniziali"></div>
         </div>
-        <div class="card-sec">📅 Date</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Date</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Data contratto</label><input type="text" name="data_contratto"></div>
           <div class="fg"><label>Data inizio</label><input type="text" name="data_inizio"></div>
@@ -2849,7 +2849,7 @@ input[readonly]{color:var(--text3)}
           <div class="fg"><label>Ora fine</label><input type="text" name="ora_fine"></div>
           <div class="fg"><label>Giorni</label><input type="text" name="giorni"></div>
         </div>
-        <div class="card-sec">💶 Tariffe</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><path d="M8 5h8a4 4 0 0 1 0 8H6"/></svg> Tariffe</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Prezzo (€)</label><input type="text" name="prezzo_noleggio"></div>
           <div class="fg"><label>Km compresi</label><input type="text" name="km_compresi"></div>
@@ -2860,7 +2860,7 @@ input[readonly]{color:var(--text3)}
           <div class="fg"><label>Costo violaz.</label><input type="text" name="costo_violazione"></div>
           <div class="fg"><label>Diff. carb.</label><input type="text" name="diff_carburante"></div>
         </div>
-        <div class="card-sec">👤 Cliente</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Cliente</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Nome</label><input type="text" name="cl_nome"></div>
           <div class="fg"><label>Cognome</label><input type="text" name="cl_cognome"></div>
@@ -2876,14 +2876,14 @@ input[readonly]{color:var(--text3)}
           <div class="fg"><label>Pat. rilascio</label><input type="text" name="cl_pat_r"></div>
           <div class="fg"><label>Pat. scadenza</label><input type="text" name="cl_pat_s"></div>
         </div>
-        <div class="card-sec">🏢 Società</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="1"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> Società</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Nome società</label><input type="text" name="soc_nome"></div>
           <div class="fg"><label>Sede</label><input type="text" name="soc_sede"></div>
           <div class="fg"><label>C.F.</label><input type="text" name="soc_cf"></div>
           <div class="fg"><label>P.IVA</label><input type="text" name="soc_piva"></div>
         </div>
-        <div class="card-sec">🧑‍✈️ Guidatore</div>
+        <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Guidatore</div>
         <div class="grid" style="margin-bottom:12px">
           <div class="fg"><label>Nome</label><input type="text" name="gu_nome"></div>
           <div class="fg"><label>Cognome</label><input type="text" name="gu_cognome"></div>
