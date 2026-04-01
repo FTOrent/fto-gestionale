@@ -30,13 +30,13 @@ img{display:block}
 #login-screen{position:fixed;inset:0;display:flex;z-index:1000;font-family:var(--f);color-scheme:light}
 .login-left{
   width:40%;background:#0a0a0a;display:flex;flex-direction:column;
-  justify-content:center;padding:0 48px 0 64px;flex-shrink:0;
+  justify-content:center;padding:0 48px 0 80px;flex-shrink:0;
 }
 .login-left-title{
-  font-size:28px;font-weight:800;color:#fff;
-  letter-spacing:-.5px;margin-bottom:10px;
+  font-size:32px;font-weight:800;color:#fff;
+  letter-spacing:-.8px;margin-bottom:12px;
 }
-.login-left-sub{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6;max-width:240px}
+.login-left-sub{font-size:13.5px;color:rgba(255,255,255,.4);line-height:1.7;max-width:260px}
 .login-right{
   flex:1;background:#fff;display:flex;flex-direction:column;
   align-items:center;justify-content:center;padding:48px;
@@ -380,7 +380,7 @@ input[readonly]{color:var(--text3)}
   <!-- Left: nero 40% -->
   <div class="login-left">
     <div class="login-left-title">FTOrent</div>
-    <div class="login-left-sub">Gestionale per controllo flotta e contratti</div>
+    <div class="login-left-sub">Gestionale per controllo flotta auto, creazione contratti automatica, e verbali</div>
   </div>
 
   <!-- Right: bianco 60% -->
@@ -461,7 +461,7 @@ input[readonly]{color:var(--text3)}
     <!-- STORICO -->
     <div class="page active" id="page-storico">
       <div class="page-hdr">
-        <div class="page-title">Storico Noleggi</div>
+        <div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Storico Noleggi</div>
         <div style="display:flex;align-items:center;gap:8px">
           <div class="page-date" id="storico-date"></div>
           <button class="btn btn-s" id="btn-backup" onclick="toggleBackup()">💾 Backup</button>
@@ -500,7 +500,7 @@ input[readonly]{color:var(--text3)}
 
     <!-- NUOVO NOLEGGIO -->
     <div class="page" id="page-nuovo">
-      <div class="page-hdr"><div class="page-title">Nuovo Noleggio</div></div>
+      <div class="page-hdr"><div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Nuovo Noleggio</div></div>
       <form id="form-nol" autocomplete="off">
 
         <!-- AUTO -->
@@ -685,7 +685,7 @@ input[readonly]{color:var(--text3)}
 
     <!-- VERBALE -->
     <div class="page" id="page-verbale">
-      <div class="page-hdr"><div class="page-title">Verbale Auto</div></div>
+      <div class="page-hdr"><div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Verbale Auto</div></div>
       <form id="form-verb" autocomplete="off">
         <div class="card">
           <div class="card-sec">🔑 Seleziona Noleggio</div>
@@ -845,7 +845,7 @@ input[readonly]{color:var(--text3)}
     <!-- VEICOLI -->
     <div class="page" id="page-auto">
       <div class="page-hdr">
-        <div class="page-title">Veicoli</div>
+        <div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Veicoli</div>
         <button class="btn btn-s" id="btn-add-auto">+ Aggiungi</button>
       </div>
       <div id="auto-list"></div>
@@ -854,7 +854,7 @@ input[readonly]{color:var(--text3)}
     <!-- LOGS PAGE -->
     <div class="page" id="page-logs">
       <div class="page-hdr">
-        <div class="page-title">Logs</div>
+        <div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Logs</div>
       </div>
 
       <!-- Tab buttons -->
@@ -2411,7 +2411,7 @@ input[readonly]{color:var(--text3)}
     <!-- STORICO -->
     <div class="page active" id="page-storico">
       <div class="page-hdr">
-        <div class="page-title">Storico Noleggi</div>
+        <div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Storico Noleggi</div>
         <div style="display:flex;align-items:center;gap:8px">
           <div class="page-date" id="storico-date"></div>
           <button class="btn btn-s" id="btn-backup" onclick="toggleBackup()">💾 Backup</button>
@@ -2450,7 +2450,7 @@ input[readonly]{color:var(--text3)}
 
     <!-- NUOVO NOLEGGIO -->
     <div class="page" id="page-nuovo">
-      <div class="page-hdr"><div class="page-title">Nuovo Noleggio</div></div>
+      <div class="page-hdr"><div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Nuovo Noleggio</div></div>
       <form id="form-nol" autocomplete="off">
 
         <!-- AUTO -->
@@ -2635,7 +2635,7 @@ input[readonly]{color:var(--text3)}
 
     <!-- VERBALE -->
     <div class="page" id="page-verbale">
-      <div class="page-hdr"><div class="page-title">Verbale Auto</div></div>
+      <div class="page-hdr"><div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Verbale Auto</div></div>
       <form id="form-verb" autocomplete="off">
         <div class="card">
           <div class="card-sec">🔑 Seleziona Noleggio</div>
@@ -2795,7 +2795,7 @@ input[readonly]{color:var(--text3)}
     <!-- VEICOLI -->
     <div class="page" id="page-auto">
       <div class="page-hdr">
-        <div class="page-title">Veicoli</div>
+        <div class="page-title" style="display:flex;align-items:center;gap:10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Veicoli</div>
         <button class="btn btn-s" id="btn-add-auto">+ Aggiungi</button>
       </div>
       <div id="auto-list"></div>
