@@ -478,9 +478,9 @@ input[readonly]{color:var(--text3)}
         <button class="btn btn-p" onclick="scaricaBackup()" style="font-size:10px">⬇ Scarica selezionati</button>
       </div>
       <div class="filt-bar">
-        <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="cliente, auto, targa…" style="min-width:200px"></div>
+        <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="Cliente, auto, targa…" style="min-width:200px"></div>
         <div class="filt-g"><label>Nome</label><input id="fn" type="text" placeholder="Nome"></div>
-        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto"></div>
+        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="Auto"13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto"></div>
         <div class="filt-g"><label>Da</label><input id="fda" type="date"></div>
         <div class="filt-g"><label>A</label><input id="faa" type="date"></div>
         <div class="filt-g"><label>€ min</label><input id="fp1" type="number" style="width:72px"></div>
@@ -520,9 +520,9 @@ input[readonly]{color:var(--text3)}
             <div class="fg"><label>Km attuali</label><input type="text" name="km_iniziali" id="n-km"></div>
             <div class="sep"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Date & Orari</div>
             <div class="fg"><label>Data inizio</label><input type="date" name="data_inizio" id="n-di" oninput="calcGiorni()"></div>
-            <div class="fg"><label>Ora inizio</label><input type="time" name="ora_inizio"></div>
+            <div class="fg"><label>Ora inizio</label><input type="time" style="color-scheme:dark" name="ora_inizio"></div>
             <div class="fg"><label>Data fine</label><input type="date" name="data_fine" id="n-df" oninput="calcGiorni()"></div>
-            <div class="fg"><label>Ora fine</label><input type="time" name="ora_fine"></div>
+            <div class="fg"><label>Ora fine</label><input type="time" style="color-scheme:dark" name="ora_fine"></div>
             <div class="fg"><label>Giorni</label><input type="text" name="giorni" id="n-gg" readonly></div>
             <div class="sep"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><path d="M8 5h8a4 4 0 0 1 0 8H6"/></svg> Tariffe</div>
             <div class="fg"><label>Prezzo noleggio (€)</label><input type="text" name="prezzo_noleggio"></div>
@@ -700,7 +700,7 @@ input[readonly]{color:var(--text3)}
           <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> Informazioni Base</div>
           <div class="grid">
             <div class="fg"><label>Data riconsegna</label><input type="date" name="data"></div>
-            <div class="fg"><label>Ora riconsegna</label><input type="time" name="ora"></div>
+            <div class="fg"><label>Ora riconsegna</label><input type="time" style="color-scheme:dark" name="ora"></div>
             <div class="fg"><label>Km attuali</label><input type="text" name="km_attuali" id="v-kmatt" oninput="calcDelta()"></div>
             <div class="fg"><label>Δ Km</label><div id="v-delta" style="padding:4px 8px;font-size:11px;font-weight:600;color:var(--text3)">—</div></div>
           </div>
@@ -753,7 +753,7 @@ input[readonly]{color:var(--text3)}
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Ispezione Danni</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="dan" data-v="No">🟢 Nessun danno</button>
-              <button type="button" class="pill" data-g="dan" data-v="Sì">Danno presente</button>
+              <button type="button" class="pill" data-g="dan" data-v="Sì" style="border-color:#cc3333;color:#ff6b6b">⚠ Danno presente</button>
             </div>
             <input type="hidden" name="danno" id="v-dan" value="No">
             <div id="dan-det" style="display:none;margin-top:10px">
@@ -772,22 +772,22 @@ input[readonly]{color:var(--text3)}
               </div>
               <!-- Interno -->
               <div id="dan-interno" class="card" style="margin-bottom:8px">
-                <div class="card-sec">Danno Interno — Descrizione</div>
+                <div class="card-sec" style="color:#ff6b6b">Danno Interno — Descrizione</div>
                 <textarea name="descrizione_interno" rows="2" placeholder="Descrivi il danno interno: sedili, cruscotto, tetto, moquette…" style="width:100%"></textarea>
               </div>
               <!-- Esterno -->
               <div id="dan-esterno" class="card" style="display:none;margin-bottom:8px">
-                <div class="card-sec">Danno Esterno — Descrizione</div>
+                <div class="card-sec" style="color:#ff6b6b">Danno Esterno — Descrizione</div>
                 <textarea name="descrizione_esterno" rows="2" placeholder="Descrivi il danno esterno: carrozzeria, paraurti, vetri, cerchi…" style="width:100%"></textarea>
               </div>
               <!-- Entrambi -->
               <div id="dan-entrambi" style="display:none">
                 <div class="card" style="margin-bottom:8px">
-                  <div class="card-sec">Danno Interno — Descrizione</div>
+                  <div class="card-sec" style="color:#ff6b6b">Danno Interno — Descrizione</div>
                   <textarea name="descrizione_interno_e" rows="2" placeholder="Descrivi il danno interno…" style="width:100%"></textarea>
                 </div>
                 <div class="card" style="margin-bottom:8px">
-                  <div class="card-sec">Danno Esterno — Descrizione</div>
+                  <div class="card-sec" style="color:#ff6b6b">Danno Esterno — Descrizione</div>
                   <textarea name="descrizione_esterno_e" rows="2" placeholder="Descrivi il danno esterno…" style="width:100%"></textarea>
                 </div>
               </div>
@@ -2428,9 +2428,9 @@ input[readonly]{color:var(--text3)}
         <button class="btn btn-p" onclick="scaricaBackup()" style="font-size:10px">⬇ Scarica selezionati</button>
       </div>
       <div class="filt-bar">
-        <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="cliente, auto, targa…" style="min-width:200px"></div>
+        <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="Cliente, auto, targa…" style="min-width:200px"></div>
         <div class="filt-g"><label>Nome</label><input id="fn" type="text" placeholder="Nome"></div>
-        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto"></div>
+        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="Auto"13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto"></div>
         <div class="filt-g"><label>Da</label><input id="fda" type="date"></div>
         <div class="filt-g"><label>A</label><input id="faa" type="date"></div>
         <div class="filt-g"><label>€ min</label><input id="fp1" type="number" style="width:72px"></div>
@@ -2470,9 +2470,9 @@ input[readonly]{color:var(--text3)}
             <div class="fg"><label>Km attuali</label><input type="text" name="km_iniziali" id="n-km"></div>
             <div class="sep"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Date & Orari</div>
             <div class="fg"><label>Data inizio</label><input type="date" name="data_inizio" id="n-di" oninput="calcGiorni()"></div>
-            <div class="fg"><label>Ora inizio</label><input type="time" name="ora_inizio"></div>
+            <div class="fg"><label>Ora inizio</label><input type="time" style="color-scheme:dark" name="ora_inizio"></div>
             <div class="fg"><label>Data fine</label><input type="date" name="data_fine" id="n-df" oninput="calcGiorni()"></div>
-            <div class="fg"><label>Ora fine</label><input type="time" name="ora_fine"></div>
+            <div class="fg"><label>Ora fine</label><input type="time" style="color-scheme:dark" name="ora_fine"></div>
             <div class="fg"><label>Giorni</label><input type="text" name="giorni" id="n-gg" readonly></div>
             <div class="sep"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><path d="M8 5h8a4 4 0 0 1 0 8H6"/></svg> Tariffe</div>
             <div class="fg"><label>Prezzo noleggio (€)</label><input type="text" name="prezzo_noleggio"></div>
@@ -2650,7 +2650,7 @@ input[readonly]{color:var(--text3)}
           <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> Informazioni Base</div>
           <div class="grid">
             <div class="fg"><label>Data riconsegna</label><input type="date" name="data"></div>
-            <div class="fg"><label>Ora riconsegna</label><input type="time" name="ora"></div>
+            <div class="fg"><label>Ora riconsegna</label><input type="time" style="color-scheme:dark" name="ora"></div>
             <div class="fg"><label>Km attuali</label><input type="text" name="km_attuali" id="v-kmatt" oninput="calcDelta()"></div>
             <div class="fg"><label>Δ Km</label><div id="v-delta" style="padding:4px 8px;font-size:11px;font-weight:600;color:var(--text3)">—</div></div>
           </div>
@@ -2703,7 +2703,7 @@ input[readonly]{color:var(--text3)}
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Ispezione Danni</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="dan" data-v="No">🟢 Nessun danno</button>
-              <button type="button" class="pill" data-g="dan" data-v="Sì">Danno presente</button>
+              <button type="button" class="pill" data-g="dan" data-v="Sì" style="border-color:#cc3333;color:#ff6b6b">⚠ Danno presente</button>
             </div>
             <input type="hidden" name="danno" id="v-dan" value="No">
             <div id="dan-det" style="display:none;margin-top:10px">
@@ -2722,22 +2722,22 @@ input[readonly]{color:var(--text3)}
               </div>
               <!-- Interno -->
               <div id="dan-interno" class="card" style="margin-bottom:8px">
-                <div class="card-sec">Danno Interno — Descrizione</div>
+                <div class="card-sec" style="color:#ff6b6b">Danno Interno — Descrizione</div>
                 <textarea name="descrizione_interno" rows="2" placeholder="Descrivi il danno interno: sedili, cruscotto, tetto, moquette…" style="width:100%"></textarea>
               </div>
               <!-- Esterno -->
               <div id="dan-esterno" class="card" style="display:none;margin-bottom:8px">
-                <div class="card-sec">Danno Esterno — Descrizione</div>
+                <div class="card-sec" style="color:#ff6b6b">Danno Esterno — Descrizione</div>
                 <textarea name="descrizione_esterno" rows="2" placeholder="Descrivi il danno esterno: carrozzeria, paraurti, vetri, cerchi…" style="width:100%"></textarea>
               </div>
               <!-- Entrambi -->
               <div id="dan-entrambi" style="display:none">
                 <div class="card" style="margin-bottom:8px">
-                  <div class="card-sec">Danno Interno — Descrizione</div>
+                  <div class="card-sec" style="color:#ff6b6b">Danno Interno — Descrizione</div>
                   <textarea name="descrizione_interno_e" rows="2" placeholder="Descrivi il danno interno…" style="width:100%"></textarea>
                 </div>
                 <div class="card" style="margin-bottom:8px">
-                  <div class="card-sec">Danno Esterno — Descrizione</div>
+                  <div class="card-sec" style="color:#ff6b6b">Danno Esterno — Descrizione</div>
                   <textarea name="descrizione_esterno_e" rows="2" placeholder="Descrivi il danno esterno…" style="width:100%"></textarea>
                 </div>
               </div>
