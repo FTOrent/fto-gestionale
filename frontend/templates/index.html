@@ -278,7 +278,16 @@ input[readonly]{color:var(--text3)}
 .nol-auto{font-size:10px;color:var(--text2);flex:1}
 .nol-dur{font-size:9px;color:var(--text3);white-space:nowrap}
 .nol-price{font-size:12px;font-weight:700;flex:0 0 auto}
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600;flex-shrink:0}
+.badge-ok{background:rgba(22,163,74,.15);color:#16a34a;border-color:rgba(22,163,74,.3);font-weight:700}
+.badge-dan{background:rgba(220,38,38,.15);color:#ef4444;border-color:rgba(220,38,38,.3);font-weight:700}
+.badge-wait{background:rgba(180,130,0,.12);color:#d97706;border-color:rgba(180,130,0,.3);font-weight:700}
+.badge-ritardo{background:rgba(220,38,38,.12);color:#ef4444;border-color:rgba(220,38,38,.3);font-weight:700}
+.badge{border:1px solid transparent;
+.badge-ok{background:rgba(22,163,74,.15);color:#16a34a;border-color:rgba(22,163,74,.3);font-weight:700}
+.badge-dan{background:rgba(220,38,38,.15);color:#ef4444;border-color:rgba(220,38,38,.3);font-weight:700}
+.badge-wait{background:rgba(180,130,0,.12);color:#d97706;border-color:rgba(180,130,0,.3);font-weight:700}
+.badge-ritardo{background:rgba(220,38,38,.12);color:#ef4444;border-color:rgba(220,38,38,.3);font-weight:700}
+}display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600;flex-shrink:0}
 .bg{background:#0a1a0e;color:var(--green);border:1px solid #0d2a12}
 .br{background:#1a0a0a;color:#cc4444;border:1px solid #2a1010}
 .bw{background:var(--bg3);color:var(--text3);border:1px solid var(--border2)}
@@ -480,7 +489,7 @@ input[readonly]{color:var(--text3)}
       <div class="filt-bar">
         <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="Cliente, auto, targa…" style="min-width:200px"></div>
         <div class="filt-g"><label>Nome</label><input id="fn" type="text" placeholder="Nome"></div>
-        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="Auto"13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto"></div>
+        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="Auto"></div>
         <div class="filt-g"><label>Da</label><input id="fda" type="date"></div>
         <div class="filt-g"><label>A</label><input id="faa" type="date"></div>
         <div class="filt-g"><label>€ min</label><input id="fp1" type="number" style="width:72px"></div>
@@ -722,7 +731,7 @@ input[readonly]{color:var(--text3)}
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg> Tipo Riconsegna</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="ric" data-v="Standard">▪ Standard</button>
-              <button type="button" class="pill" data-g="ric" data-v="Premium">⭐ Premium</button>
+              <button type="button" class="pill" data-g="ric" data-v="Premium" style="border-color:#d97706;color:#f59e0b">★ Premium</button>
             </div>
             <input type="hidden" name="tipo_riconsegna" id="v-ric" value="Standard">
           </div>
@@ -1283,9 +1292,19 @@ function fv(v){
 
 function renderCard(r){
   const st=r.verbale_stato||'';
-  let bCls='bw',bTxt='⏳ In attesa';
-  if(st.includes('OK')){bCls='bg';bTxt='🟢 Verbale OK';}
-  if(st.includes('Danno')){bCls='br';bTxt='🔴 Verbale – Danno';}
+  // Check if overdue (ended >24h ago, no verbale)
+  const isOverdue=(()=>{
+    if(st) return false;
+    if(!r.data_fine) return false;
+    const p=r.data_fine.split('/');
+    if(p.length!==3) return false;
+    const fine=new Date(p[2],p[1]-1,p[0]);
+    return (Date.now()-fine.getTime())>24*60*60*1000;
+  })();
+  let bCls='badge-wait',bTxt='In attesa';
+  if(st.includes('OK')){bCls='badge-ok';bTxt='Verbale OK';}
+  if(st.includes('Danno')){bCls='badge-dan';bTxt='Danno';}
+  if(isOverdue&&!st){bCls='badge-ritardo';bTxt='Ritardo';}
   const nm=[r.cl_nome,r.cl_cognome].filter(Boolean).join(' ')||r.nome_cognome||'—';
   const nota=r.note&&r.note!=='nan'?`<div class="nol-note">${r.note}</div>`:'';
   const cpL=r.contratto_path&&r.contratto_path!=='nan'?`<span class="plink">📄 Contratto: ${r.contratto_path.split('/').pop()||r.contratto_path}</span>`:'';
@@ -2293,7 +2312,16 @@ input[readonly]{color:var(--text3)}
 .nol-auto{font-size:10px;color:var(--text2);flex:1}
 .nol-dur{font-size:9px;color:var(--text3);white-space:nowrap}
 .nol-price{font-size:12px;font-weight:700;flex:0 0 auto}
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600;flex-shrink:0}
+.badge-ok{background:rgba(22,163,74,.15);color:#16a34a;border-color:rgba(22,163,74,.3);font-weight:700}
+.badge-dan{background:rgba(220,38,38,.15);color:#ef4444;border-color:rgba(220,38,38,.3);font-weight:700}
+.badge-wait{background:rgba(180,130,0,.12);color:#d97706;border-color:rgba(180,130,0,.3);font-weight:700}
+.badge-ritardo{background:rgba(220,38,38,.12);color:#ef4444;border-color:rgba(220,38,38,.3);font-weight:700}
+.badge{border:1px solid transparent;
+.badge-ok{background:rgba(22,163,74,.15);color:#16a34a;border-color:rgba(22,163,74,.3);font-weight:700}
+.badge-dan{background:rgba(220,38,38,.15);color:#ef4444;border-color:rgba(220,38,38,.3);font-weight:700}
+.badge-wait{background:rgba(180,130,0,.12);color:#d97706;border-color:rgba(180,130,0,.3);font-weight:700}
+.badge-ritardo{background:rgba(220,38,38,.12);color:#ef4444;border-color:rgba(220,38,38,.3);font-weight:700}
+}display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600;flex-shrink:0}
 .bg{background:#0a1a0e;color:var(--green);border:1px solid #0d2a12}
 .br{background:#1a0a0a;color:#cc4444;border:1px solid #2a1010}
 .bw{background:var(--bg3);color:var(--text3);border:1px solid var(--border2)}
@@ -2430,7 +2458,7 @@ input[readonly]{color:var(--text3)}
       <div class="filt-bar">
         <div class="filt-g"><label>Cerca</label><input id="fq" type="text" placeholder="Cliente, auto, targa…" style="min-width:200px"></div>
         <div class="filt-g"><label>Nome</label><input id="fn" type="text" placeholder="Nome"></div>
-        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="Auto"13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg> Auto"></div>
+        <div class="filt-g"><label>Auto / Targa</label><input id="fa" type="text" placeholder="Auto"></div>
         <div class="filt-g"><label>Da</label><input id="fda" type="date"></div>
         <div class="filt-g"><label>A</label><input id="faa" type="date"></div>
         <div class="filt-g"><label>€ min</label><input id="fp1" type="number" style="width:72px"></div>
@@ -2672,7 +2700,7 @@ input[readonly]{color:var(--text3)}
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg> Tipo Riconsegna</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="ric" data-v="Standard">▪ Standard</button>
-              <button type="button" class="pill" data-g="ric" data-v="Premium">⭐ Premium</button>
+              <button type="button" class="pill" data-g="ric" data-v="Premium" style="border-color:#d97706;color:#f59e0b">★ Premium</button>
             </div>
             <input type="hidden" name="tipo_riconsegna" id="v-ric" value="Standard">
           </div>
