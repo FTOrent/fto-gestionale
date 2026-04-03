@@ -3045,8 +3045,7 @@ function initFlatpickr(){
       locale: 'it',
       dateFormat: 'Y-m-d',
       disableMobile: true,
-      appendTo: wrap,
-      onReady(_, __, fp){ fp.calendarContainer.style.position='absolute'; },
+      positionElement: btn,
       onChange(dates, dateStr){
         inp.dispatchEvent(new Event('input',{bubbles:true}));
         btn.querySelector('span').textContent = formatDateIT(dateStr);
@@ -3076,8 +3075,7 @@ function initFlatpickr(){
       dateFormat: 'H:i',
       time_24hr: true,
       disableMobile: true,
-      appendTo: wrap,
-      onReady(_, __, fp){ fp.calendarContainer.style.position='absolute'; },
+      positionElement: btn,
       onChange(_, timeStr){
         inp.dispatchEvent(new Event('input',{bubbles:true}));
         btn.querySelector('span').textContent = timeStr||'Seleziona ora';
