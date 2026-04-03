@@ -3017,203 +3017,261 @@ input[readonly]{color:var(--text3)}
 
 <script>
 
-// ══ CUSTOM DATE/TIME PICKER ══════════════════════════════════
+// ══ MODERN DATE/TIME PICKER ══════════════════════════════════
 (function(){
-  let _activeDP = null;
+  'use strict';
+  let _open = null;
 
-  function closeAll(){ 
-    document.querySelectorAll('.dp-popup').forEach(p=>p.remove());
-    _activeDP = null;
+  function closeAll(){
+    if(_open){ _open.remove(); _open=null; }
+    document.querySelectorAll('.dp-btn').forEach(b=>b.classList.remove('open'));
   }
-  document.addEventListener('click', e=>{
-    if(!e.target.closest('.dp-wrap')) closeAll();
-  });
+  document.addEventListener('click', e=>{ if(!e.target.closest('.dp-wrap')) closeAll(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAll(); });
 
   const MONTHS = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
                   'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
   const WDAYS  = ['Lu','Ma','Me','Gi','Ve','Sa','Do'];
 
-  // ── DATE PICKER ──────────────────────────────────────────
-  function createDatePicker(input){
+  /* ─── DATE PICKER ─────────────────────────────────────── */
+  function mkDatePicker(input){
     const wrap = document.createElement('div');
     wrap.className = 'dp-wrap';
-    input.parentNode.insertBefore(wrap, input);
+    input.before(wrap);
     wrap.appendChild(input);
+    input.style.display = 'none';
 
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'dp-input';
-    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>${formatDate(input.value)||'Seleziona data'}</span>`;
-    input.style.display = 'none';
+    btn.className = 'dp-btn';
+
+    function fmtDisplay(iso){
+      if(!iso) return null;
+      const [y,m,d]=iso.split('-');
+      return `${d}/${m}/${y}`;
+    }
+    function updateBtn(){
+      const v = input.value;
+      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="dp-btn-val${v?'':' placeholder'}">${fmtDisplay(v)||'Seleziona data'}</span>`;
+    }
+    updateBtn();
     wrap.appendChild(btn);
 
     let cur = new Date();
-    if(input.value){ const p=input.value.split('-'); cur=new Date(p[0],p[1]-1,p[2]); }
+    if(input.value){ const p=input.value.split('-'); cur=new Date(+p[0],+p[1]-1,+p[2]); }
 
-    function formatDate(v){
-      if(!v) return '';
-      const p=v.split('-');
-      return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:'';
-    }
-
-    function renderCalendar(){
+    btn.addEventListener('click', e=>{
+      e.stopPropagation();
+      if(_open && wrap.contains(_open)){ closeAll(); return; }
       closeAll();
+      if(input.value){ const p=input.value.split('-'); cur=new Date(+p[0],+p[1]-1,+p[2]); }
+      showCal();
+    });
+
+    function showCal(){
       btn.classList.add('open');
       const popup = document.createElement('div');
       popup.className = 'dp-popup';
-      // Check if popup would overflow right
+      // Align right if near edge
       const rect = wrap.getBoundingClientRect();
-      if(rect.left + 280 > window.innerWidth) popup.classList.add('right');
-
-      const y=cur.getFullYear(), m=cur.getMonth();
-      const first=new Date(y,m,1).getDay();
-      const offset=(first===0?6:first-1);
-      const days=new Date(y,m+1,0).getDate();
-      const today=new Date();
-      const selVal=input.value;
-
-      let html=`
-        <div class="dp-hdr">
-          <button class="dp-nav" id="dp-prev">‹</button>
-          <div class="dp-month">${MONTHS[m]} ${y}</div>
-          <button class="dp-nav" id="dp-next">›</button>
-        </div>
-        <div class="dp-wdays">${WDAYS.map(d=>`<div class="dp-wd">${d}</div>`).join('')}</div>
-        <div class="dp-days">`;
-
-      // Prev month days
-      const prevDays=new Date(y,m,0).getDate();
-      for(let i=offset-1;i>=0;i--){
-        html+=`<button class="dp-day other-month" disabled>${prevDays-i}</button>`;
-      }
-      // Current month
-      for(let d=1;d<=days;d++){
-        const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const isToday=today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d;
-        const isSel=iso===selVal;
-        html+=`<button class="dp-day${isToday?' today':''}${isSel?' selected':''}" data-date="${iso}">${d}</button>`;
-      }
-      // Next month fill
-      const total=offset+days;
-      const nextFill=(7-total%7)%7;
-      for(let d=1;d<=nextFill;d++) html+=`<button class="dp-day other-month" disabled>${d}</button>`;
-      html+=`</div>`;
-      popup.innerHTML=html;
+      if(rect.left + 300 > window.innerWidth) popup.classList.add('align-right');
+      _open = popup;
+      renderCal(popup);
       wrap.appendChild(popup);
-
-      popup.querySelector('#dp-prev').addEventListener('click',e=>{e.stopPropagation();cur=new Date(y,m-1,1);renderCalendar()});
-      popup.querySelector('#dp-next').addEventListener('click',e=>{e.stopPropagation();cur=new Date(y,m+1,1);renderCalendar()});
-      popup.querySelectorAll('.dp-day[data-date]').forEach(d=>{
-        d.addEventListener('click',e=>{
-          e.stopPropagation();
-          input.value=d.dataset.date;
-          input.dispatchEvent(new Event('input'));
-          btn.querySelector('span').textContent=formatDate(d.dataset.date);
-          closeAll();
-          btn.classList.remove('open');
-        });
-      });
     }
 
-    btn.addEventListener('click',e=>{
-      e.stopPropagation();
-      if(wrap.querySelector('.dp-popup')){closeAll();btn.classList.remove('open');return;}
-      renderCalendar();
-    });
+    function renderCal(popup){
+      const y=cur.getFullYear(), m=cur.getMonth();
+      const today=new Date();
+      const selVal=input.value;
+      let first=new Date(y,m,1).getDay(); // 0=Sun
+      first = first===0?6:first-1; // Mon=0
+      const days=new Date(y,m+1,0).getDate();
+      const prevDays=new Date(y,m,0).getDate();
 
-    // Keep display in sync if value changes programmatically
-    const obs=new MutationObserver(()=>{
-      btn.querySelector('span').textContent=formatDate(input.value)||'Seleziona data';
-    });
-    obs.observe(input,{attributes:true,attributeFilter:['value']});
+      let daysHtml='';
+      for(let i=first-1;i>=0;i--)
+        daysHtml+=`<button class="cal-day cal-other" disabled>${prevDays-i}</button>`;
+      for(let d=1;d<=days;d++){
+        const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const isTd=today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d;
+        const isSel=iso===selVal;
+        daysHtml+=`<button class="cal-day${isTd?' cal-today':''}${isSel?' cal-sel':''}" data-iso="${iso}">${d}</button>`;
+      }
+      const total=first+days, fill=(7-total%7)%7;
+      for(let d=1;d<=fill;d++) daysHtml+=`<button class="cal-day cal-other" disabled>${d}</button>`;
+
+      popup.innerHTML=`<div class="cal-wrap">
+        <div class="cal-hdr">
+          <button class="cal-nav" id="cal-p">‹</button>
+          <div class="cal-title">${MONTHS[m]} ${y}</div>
+          <button class="cal-nav" id="cal-n">›</button>
+        </div>
+        <div class="cal-grid">
+          ${WDAYS.map(w=>`<div class="cal-wd">${w}</div>`).join('')}
+          ${daysHtml}
+        </div>
+      </div>`;
+
+      popup.querySelector('#cal-p').onclick=e=>{e.stopPropagation();cur=new Date(y,m-1,1);renderCal(popup)};
+      popup.querySelector('#cal-n').onclick=e=>{e.stopPropagation();cur=new Date(y,m+1,1);renderCal(popup)};
+      popup.querySelectorAll('.cal-day[data-iso]').forEach(d=>{
+        d.onclick=e=>{
+          e.stopPropagation();
+          input.value=d.dataset.iso;
+          input.dispatchEvent(new Event('input',{bubbles:true}));
+          updateBtn();
+          closeAll();
+        };
+      });
+    }
   }
 
-  // ── TIME PICKER ──────────────────────────────────────────
-  function createTimePicker(input){
+  /* ─── TIME WHEEL PICKER ───────────────────────────────── */
+  function mkTimePicker(input){
     const wrap = document.createElement('div');
     wrap.className = 'dp-wrap';
-    input.parentNode.insertBefore(wrap, input);
+    input.before(wrap);
     wrap.appendChild(input);
+    input.style.display='none';
 
     const btn = document.createElement('button');
     btn.type='button';
-    btn.className='dp-input';
-    const timeVal = input.value||'';
-    const [hh,mm] = timeVal.split(':');
-    let H=parseInt(hh)||0, M=parseInt(mm)||0;
-    btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>${timeVal||'Seleziona ora'}</span>`;
-    input.style.display='none';
-    wrap.appendChild(btn);
+    btn.className='dp-btn';
 
+    function getHM(){ const v=input.value||'00:00'; const p=v.split(':'); return [+p[0]||0,+p[1]||0]; }
     function fmt(n){return String(n).padStart(2,'0')}
-    function updateInput(){
-      const v=`${fmt(H)}:${fmt(M)}`;
-      input.value=v;
-      input.dispatchEvent(new Event('input'));
-      btn.querySelector('span').textContent=v;
+    function updateBtn(){
+      const [h,m]=getHM();
+      const v=input.value;
+      btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="dp-btn-val${v?'':' placeholder'}">${v||'Seleziona ora'}</span>`;
     }
-
-    function renderTimePicker(){
-      closeAll();
-      btn.classList.add('open');
-      const popup=document.createElement('div');
-      popup.className='dp-popup';
-      popup.style.minWidth='200px';
-      popup.innerHTML=`
-        <div style="text-align:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:8px;letter-spacing:.5px">ORARIO</div>
-        <div class="tp-wrap">
-          <div class="tp-col">
-            <button class="tp-btn" id="tp-hu">▲</button>
-            <div class="tp-val" id="tp-h">${fmt(H)}</div>
-            <button class="tp-btn" id="tp-hd">▼</button>
-          </div>
-          <div class="tp-sep">:</div>
-          <div class="tp-col">
-            <button class="tp-btn" id="tp-mu">▲</button>
-            <div class="tp-val" id="tp-m">${fmt(M)}</div>
-            <button class="tp-btn" id="tp-md">▼</button>
-          </div>
-        </div>
-        <button class="dp-confirm" id="tp-ok">Conferma</button>
-      `;
-      wrap.appendChild(popup);
-
-      function refreshDisplay(){
-        popup.querySelector('#tp-h').textContent=fmt(H);
-        popup.querySelector('#tp-m').textContent=fmt(M);
-      }
-      popup.querySelector('#tp-hu').addEventListener('click',e=>{e.stopPropagation();H=(H+1)%24;refreshDisplay()});
-      popup.querySelector('#tp-hd').addEventListener('click',e=>{e.stopPropagation();H=(H-1+24)%24;refreshDisplay()});
-      popup.querySelector('#tp-mu').addEventListener('click',e=>{e.stopPropagation();M=(M+5)%60;refreshDisplay()});
-      popup.querySelector('#tp-md').addEventListener('click',e=>{e.stopPropagation();M=(M-5+60)%60;refreshDisplay()});
-      popup.querySelector('#tp-ok').addEventListener('click',e=>{e.stopPropagation();updateInput();closeAll();btn.classList.remove('open')});
-    }
+    updateBtn();
+    wrap.appendChild(btn);
 
     btn.addEventListener('click',e=>{
       e.stopPropagation();
-      const v=input.value||''; const p=v.split(':');
-      H=parseInt(p[0])||0; M=parseInt(p[1])||0;
-      if(wrap.querySelector('.dp-popup')){closeAll();btn.classList.remove('open');return;}
-      renderTimePicker();
+      if(_open && wrap.contains(_open)){closeAll();return;}
+      closeAll();
+      showWheel();
+    });
+
+    function showWheel(){
+      btn.classList.add('open');
+      let [H,M]=getHM();
+      const popup=document.createElement('div');
+      popup.className='dp-popup';
+      const rect=wrap.getBoundingClientRect();
+      if(rect.left+240>window.innerWidth) popup.classList.add('align-right');
+      _open=popup;
+
+      // Build hour list 0-23, minute list 0-59
+      function makeWheel(id, count, selected, step=1){
+        const items=[];
+        for(let i=0;i<count;i+=step) items.push(i);
+        const selIdx=items.indexOf(selected);
+        const ITEM_H=44;
+        const offset=-selIdx*ITEM_H;
+        return {items, selIdx, offset, ITEM_H};
+      }
+
+      let hw=makeWheel('h',24,H,1);
+      let mw=makeWheel('m',60,M,1);
+
+      function renderWheel(wh, id){
+        return `<div class="tw-col" id="${id}">
+          <div class="tw-selector"></div>
+          <div class="tw-list" id="${id}-list" style="transform:translateY(calc(50% - 22px + ${wh.offset}px))">
+            ${wh.items.map((v,i)=>`<div class="tw-item${i===wh.selIdx?' active':''}" data-i="${i}">${fmt(v)}</div>`).join('')}
+          </div>
+        </div>`;
+      }
+
+      popup.innerHTML=`
+        <div class="tw-title">Orario</div>
+        <div class="tw-wheels">
+          ${renderWheel(hw,'tw-h')}
+          <div class="tw-sep">:</div>
+          ${renderWheel(mw,'tw-m')}
+        </div>
+        <button class="tw-confirm" id="tw-ok">Conferma</button>
+      `;
+      wrap.appendChild(popup);
+
+      function setupDrag(colId, wh, onSelect){
+        const col=popup.querySelector(`#${colId}`);
+        const list=popup.querySelector(`#${colId}-list`);
+        const ITEM_H=44;
+        let startY=0, startOff=wh.offset, dragging=false;
+
+        function setIndex(idx){
+          idx=Math.max(0,Math.min(wh.items.length-1,idx));
+          wh.selIdx=idx;
+          wh.offset=-idx*ITEM_H;
+          list.style.transform=`translateY(calc(50% - 22px + ${wh.offset}px))`;
+          list.querySelectorAll('.tw-item').forEach((el,i)=>{
+            el.classList.toggle('active',i===idx);
+          });
+          onSelect(wh.items[idx]);
+        }
+
+        col.addEventListener('wheel',e=>{
+          e.preventDefault();
+          const d=e.deltaY>0?1:-1;
+          setIndex(wh.selIdx+d);
+        },{passive:false});
+
+        col.addEventListener('mousedown',e=>{
+          dragging=true;startY=e.clientY;startOff=wh.offset;
+          e.preventDefault();
+        });
+        document.addEventListener('mousemove',e=>{
+          if(!dragging)return;
+          const dy=e.clientY-startY;
+          const newIdx=Math.round((-startOff-dy)/ITEM_H);
+          setIndex(newIdx);
+        });
+        document.addEventListener('mouseup',()=>{dragging=false;});
+
+        // Touch
+        col.addEventListener('touchstart',e=>{startY=e.touches[0].clientY;startOff=wh.offset;},{passive:true});
+        col.addEventListener('touchmove',e=>{
+          const dy=e.touches[0].clientY-startY;
+          const newIdx=Math.round((-startOff-dy)/ITEM_H);
+          setIndex(newIdx);
+        },{passive:true});
+      }
+
+      setupDrag('tw-h',hw,v=>{ H=v; });
+      setupDrag('tw-m',mw,v=>{ M=v; });
+
+      popup.querySelector('#tw-ok').onclick=e=>{
+        e.stopPropagation();
+        const val=`${fmt(H)}:${fmt(M)}`;
+        input.value=val;
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+        updateBtn();
+        closeAll();
+      };
+    }
+  }
+
+  /* ─── INIT ────────────────────────────────────────────── */
+  function initAll(){
+    document.querySelectorAll('input[type="date"]:not([data-dp])').forEach(inp=>{
+      inp.setAttribute('data-dp','1');
+      mkDatePicker(inp);
+    });
+    document.querySelectorAll('input[type="time"]:not([data-tp])').forEach(inp=>{
+      inp.setAttribute('data-tp','1');
+      mkTimePicker(inp);
     });
   }
 
-  // ── INIT all date/time inputs ─────────────────────────────
-  function initPickers(){
-    document.querySelectorAll('input[type="date"]:not(.dp-init)').forEach(inp=>{
-      inp.classList.add('dp-init');
-      createDatePicker(inp);
-    });
-    document.querySelectorAll('input[type="time"]:not(.dp-init)').forEach(inp=>{
-      inp.classList.add('dp-init');
-      createTimePicker(inp);
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', initPickers);
-  // Re-init when navigating pages
-  setTimeout(initPickers, 500);
-  window._initPickers = initPickers;
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initAll);
+  else initAll();
+  setTimeout(initAll,800);
+  window._initPickers=initAll;
 })();
 
 </script>
