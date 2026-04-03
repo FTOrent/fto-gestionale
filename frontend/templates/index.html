@@ -1230,6 +1230,7 @@ async function showApp(){
   document.getElementById('storico-date').textContent=
     new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   loadStorico();loadAutoData();loadVerbSel();
+  setTimeout(()=>window._initPickers&&window._initPickers(),300);
 }
 if(TOKEN)showApp().catch(doLogout);
 
@@ -1244,7 +1245,8 @@ document.querySelectorAll('.nav-btn[data-page]').forEach(btn=>{
     if(btn.dataset.page==='logs'){ loadLogs(); switchLogTab('accessi'); }
     if(btn.dataset.page==='auto')loadAutoPage();
     if(btn.dataset.page==='verbale'){ loadVerbSel(); setTimeout(()=>{ const groups=new Set([...document.querySelectorAll('.pill[data-g]')].map(p=>p.dataset.g)); groups.forEach(g=>{ const a=document.querySelector(`.pill[data-g="${g}"].on`); if(a) setPillGroup(g,a.dataset.v); }); },100); }
-    if(btn.dataset.page==='nuovo')initDateFields();
+    if(btn.dataset.page==='nuovo'){initDateFields();setTimeout(()=>window._initPickers&&window._initPickers(),50);}
+    if(btn.dataset.page==='verbale')setTimeout(()=>window._initPickers&&window._initPickers(),50);
   });
 });
 
