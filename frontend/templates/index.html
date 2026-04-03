@@ -731,7 +731,7 @@ input[readonly]{color:var(--text3)}
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg> Tipo Riconsegna</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="ric" data-v="Standard"><svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="3"/></svg> Standard</button>
-              <button type="button" class="pill" data-g="ric" data-v="Premium" style="border-color:#d97706;color:#f59e0b;background:rgba(217,119,6,.12)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Premium</button>
+              <button type="button" class="pill" data-g="ric" data-v="Premium"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Premium</button>
             </div>
             <input type="hidden" name="tipo_riconsegna" id="v-ric" value="Standard">
           </div>
@@ -762,7 +762,7 @@ input[readonly]{color:var(--text3)}
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Ispezione Danni</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="dan" data-v="No"><svg width="10" height="10" viewBox="0 0 10 10" fill="#22c55e"><circle cx="5" cy="5" r="5"/></svg> Nessun danno</button>
-              <button type="button" class="pill" data-g="dan" data-v="Sì" style="border-color:#cc3333;color:#ff6b6b;background:rgba(204,51,51,.12)">⚠ Danno presente</button>
+              <button type="button" class="pill" data-g="dan" data-v="Sì">⚠ Danno presente</button>
             </div>
             <input type="hidden" name="danno" id="v-dan" value="No">
             <div id="dan-det" style="display:none;margin-top:10px">
@@ -1064,7 +1064,19 @@ function initDateFields(){
     });
   });
 }
-document.addEventListener('DOMContentLoaded', initDateFields);
+document.addEventListener('DOMContentLoaded', ()=>{
+  initDateFields();
+  // Initialize active pills with colors
+  document.querySelectorAll('.pill.on').forEach(p=>{
+    const g=p.dataset.g, v=p.dataset.v;
+    const key = g==='dan' ? `Dan-${v}` : v;
+    applyPillTheme(p, PILL_THEMES[key]);
+    // Set others to off
+    document.querySelectorAll(`.pill[data-g="${g}"]`).forEach(x=>{
+      if(x!==p) x.classList.add('off');
+    });
+  });
+});
 // Also call after page navigation since pages are shown/hidden
 const _origShowApp = null;
 
@@ -1665,25 +1677,49 @@ document.getElementById('fuel-bar').querySelectorAll('.fuel').forEach(b=>{
 });
 
 // pills
+// Pill color themes per value
+const PILL_THEMES = {
+  // Riconsegna
+  'Standard': {bg:'rgba(59,130,246,.18)', border:'#3b82f6', color:'#60a5fa', glow:'rgba(59,130,246,.25)'},
+  'Premium':  {bg:'rgba(217,119,6,.18)',  border:'#d97706', color:'#f59e0b', glow:'rgba(217,119,6,.25)'},
+  // Pulizia
+  'Pulita':   {bg:'rgba(34,197,94,.18)',  border:'#22c55e', color:'#4ade80', glow:'rgba(34,197,94,.25)'},
+  'Sporca':   {bg:'rgba(239,68,68,.18)',  border:'#ef4444', color:'#f87171', glow:'rgba(239,68,68,.25)'},
+  // Oggetti
+  'No':       {bg:'rgba(34,197,94,.18)',  border:'#22c55e', color:'#4ade80', glow:'rgba(34,197,94,.25)'},
+  'Sì':       {bg:'rgba(217,119,6,.18)',  border:'#d97706', color:'#f59e0b', glow:'rgba(217,119,6,.25)'},
+  // Danno
+  'Dan-No':   {bg:'rgba(34,197,94,.18)',  border:'#22c55e', color:'#4ade80', glow:'rgba(34,197,94,.25)'},
+  'Dan-Sì':   {bg:'rgba(239,68,68,.18)',  border:'#ef4444', color:'#f87171', glow:'rgba(239,68,68,.25)'},
+  // Tipo danno
+  'Interno':  {bg:'rgba(239,68,68,.18)',  border:'#ef4444', color:'#f87171', glow:'rgba(239,68,68,.25)'},
+  'Esterno':  {bg:'rgba(239,68,68,.18)',  border:'#ef4444', color:'#f87171', glow:'rgba(239,68,68,.25)'},
+  'Entrambi': {bg:'rgba(239,68,68,.18)',  border:'#ef4444', color:'#f87171', glow:'rgba(239,68,68,.25)'},
+};
+
+function applyPillTheme(el, theme){
+  if(!theme) return;
+  el.style.setProperty('--pill-bg',    theme.bg);
+  el.style.setProperty('--pill-border',theme.border);
+  el.style.setProperty('--pill-color', theme.color);
+  el.style.setProperty('--pill-glow',  theme.glow);
+}
+
 document.querySelectorAll('.pill').forEach(p=>{
   p.addEventListener('click',()=>{
     const g=p.dataset.g;
-    // Reset all pills in group
+    const v=p.dataset.v;
+    // Reset all in group to "off"
     document.querySelectorAll(`.pill[data-g="${g}"]`).forEach(x=>{
-      x.classList.remove('on');
-      x.style.removeProperty('border-color');
-      x.style.removeProperty('color');
-      x.style.removeProperty('background');
-      x.style.removeProperty('box-shadow');
+      x.classList.remove('on','off');
+      x.classList.add('off');
     });
+    // Activate clicked
+    p.classList.remove('off');
     p.classList.add('on');
-    // Apply custom color if data-color set
-    if(p.dataset.color==='warning'){
-      p.style.borderColor='#d97706';
-      p.style.color='#f59e0b';
-      p.style.background='rgba(217,119,6,.15)';
-      p.style.boxShadow='0 0 10px rgba(217,119,6,.2)';
-    }
+    // Apply theme
+    const key = g==='dan' ? `Dan-${v}` : v;
+    applyPillTheme(p, PILL_THEMES[key]);
     const m={ric:'v-ric',pul:'v-pul',ogg:'v-ogg',dan:'v-dan',tdan:'v-tdan'};
     const h=m[g];if(h)document.getElementById(h).value=p.dataset.v;
     if(g==='dan')document.getElementById('dan-det').style.display=p.dataset.v==='Sì'?'block':'none';
@@ -2714,7 +2750,7 @@ input[readonly]{color:var(--text3)}
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg> Tipo Riconsegna</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="ric" data-v="Standard"><svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="3"/></svg> Standard</button>
-              <button type="button" class="pill" data-g="ric" data-v="Premium" style="border-color:#d97706;color:#f59e0b;background:rgba(217,119,6,.12)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Premium</button>
+              <button type="button" class="pill" data-g="ric" data-v="Premium"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Premium</button>
             </div>
             <input type="hidden" name="tipo_riconsegna" id="v-ric" value="Standard">
           </div>
@@ -2745,7 +2781,7 @@ input[readonly]{color:var(--text3)}
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Ispezione Danni</div>
             <div class="pills">
               <button type="button" class="pill on" data-g="dan" data-v="No"><svg width="10" height="10" viewBox="0 0 10 10" fill="#22c55e"><circle cx="5" cy="5" r="5"/></svg> Nessun danno</button>
-              <button type="button" class="pill" data-g="dan" data-v="Sì" style="border-color:#cc3333;color:#ff6b6b;background:rgba(204,51,51,.12)">⚠ Danno presente</button>
+              <button type="button" class="pill" data-g="dan" data-v="Sì">⚠ Danno presente</button>
             </div>
             <input type="hidden" name="danno" id="v-dan" value="No">
             <div id="dan-det" style="display:none;margin-top:10px">
