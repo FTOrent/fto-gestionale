@@ -730,16 +730,16 @@ input[readonly]{color:var(--text3)}
           <div class="card">
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg> Tipo Riconsegna</div>
             <div class="pills">
-              <button type="button" class="pill on" data-g="ric" data-v="Standard">▪ Standard</button>
-              <button type="button" class="pill" data-g="ric" data-v="Premium" style="border-color:#d97706;color:#f59e0b">★ Premium</button>
+              <button type="button" class="pill on" data-g="ric" data-v="Standard"><svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="3"/></svg> Standard</button>
+              <button type="button" class="pill" data-g="ric" data-v="Premium" style="border-color:#d97706;color:#f59e0b"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Premium</button>
             </div>
             <input type="hidden" name="tipo_riconsegna" id="v-ric" value="Standard">
           </div>
           <div class="card">
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Pulizia Interna</div>
             <div class="pills">
-              <button type="button" class="pill on" data-g="pul" data-v="Pulita">✓ Pulita</button>
-              <button type="button" class="pill" data-g="pul" data-v="Sporca">✗ Sporca</button>
+              <button type="button" class="pill on" data-g="pul" data-v="Pulita"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Pulita</button>
+              <button type="button" class="pill" data-g="pul" data-v="Sporca"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Sporca</button>
             </div>
             <input type="hidden" name="pulizia" id="v-pul" value="Pulita">
             <label style="margin-top:8px;display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2);cursor:pointer">
@@ -752,8 +752,8 @@ input[readonly]{color:var(--text3)}
           <div class="card">
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Oggetti Personali</div>
             <div class="pills">
-              <button type="button" class="pill on" data-g="ogg" data-v="No">✓ Nessuno</button>
-              <button type="button" class="pill" data-g="ogg" data-v="Sì">! Trovati</button>
+              <button type="button" class="pill on" data-g="ogg" data-v="No"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Nessuno</button>
+              <button type="button" class="pill" data-g="ogg" data-v="Sì"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Trovati</button>
             </div>
             <input type="hidden" name="oggetti" id="v-ogg" value="No">
             <input type="text" name="oggetti_desc" placeholder="Descrizione oggetti…" style="margin-top:8px">
@@ -761,7 +761,7 @@ input[readonly]{color:var(--text3)}
           <div class="card fg-2">
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Ispezione Danni</div>
             <div class="pills">
-              <button type="button" class="pill on" data-g="dan" data-v="No">🟢 Nessun danno</button>
+              <button type="button" class="pill on" data-g="dan" data-v="No"><svg width="10" height="10" viewBox="0 0 10 10" fill="#22c55e"><circle cx="5" cy="5" r="5"/></svg> Nessun danno</button>
               <button type="button" class="pill" data-g="dan" data-v="Sì" style="border-color:#cc3333;color:#ff6b6b">⚠ Danno presente</button>
             </div>
             <input type="hidden" name="danno" id="v-dan" value="No">
@@ -2699,16 +2699,16 @@ input[readonly]{color:var(--text3)}
           <div class="card">
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg> Tipo Riconsegna</div>
             <div class="pills">
-              <button type="button" class="pill on" data-g="ric" data-v="Standard">▪ Standard</button>
-              <button type="button" class="pill" data-g="ric" data-v="Premium" style="border-color:#d97706;color:#f59e0b">★ Premium</button>
+              <button type="button" class="pill on" data-g="ric" data-v="Standard"><svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="3"/></svg> Standard</button>
+              <button type="button" class="pill" data-g="ric" data-v="Premium" style="border-color:#d97706;color:#f59e0b"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Premium</button>
             </div>
             <input type="hidden" name="tipo_riconsegna" id="v-ric" value="Standard">
           </div>
           <div class="card">
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Pulizia Interna</div>
             <div class="pills">
-              <button type="button" class="pill on" data-g="pul" data-v="Pulita">✓ Pulita</button>
-              <button type="button" class="pill" data-g="pul" data-v="Sporca">✗ Sporca</button>
+              <button type="button" class="pill on" data-g="pul" data-v="Pulita"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Pulita</button>
+              <button type="button" class="pill" data-g="pul" data-v="Sporca"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Sporca</button>
             </div>
             <input type="hidden" name="pulizia" id="v-pul" value="Pulita">
             <label style="margin-top:8px;display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2);cursor:pointer">
@@ -2721,8 +2721,8 @@ input[readonly]{color:var(--text3)}
           <div class="card">
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Oggetti Personali</div>
             <div class="pills">
-              <button type="button" class="pill on" data-g="ogg" data-v="No">✓ Nessuno</button>
-              <button type="button" class="pill" data-g="ogg" data-v="Sì">! Trovati</button>
+              <button type="button" class="pill on" data-g="ogg" data-v="No"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Nessuno</button>
+              <button type="button" class="pill" data-g="ogg" data-v="Sì"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Trovati</button>
             </div>
             <input type="hidden" name="oggetti" id="v-ogg" value="No">
             <input type="text" name="oggetti_desc" placeholder="Descrizione oggetti…" style="margin-top:8px">
@@ -2730,7 +2730,7 @@ input[readonly]{color:var(--text3)}
           <div class="card fg-2">
             <div class="card-sec"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Ispezione Danni</div>
             <div class="pills">
-              <button type="button" class="pill on" data-g="dan" data-v="No">🟢 Nessun danno</button>
+              <button type="button" class="pill on" data-g="dan" data-v="No"><svg width="10" height="10" viewBox="0 0 10 10" fill="#22c55e"><circle cx="5" cy="5" r="5"/></svg> Nessun danno</button>
               <button type="button" class="pill" data-g="dan" data-v="Sì" style="border-color:#cc3333;color:#ff6b6b">⚠ Danno presente</button>
             </div>
             <input type="hidden" name="danno" id="v-dan" value="No">
